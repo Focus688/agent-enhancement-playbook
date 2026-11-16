@@ -5,6 +5,8 @@
 
 **English abstract**: A field-tested playbook for making production AI agents stronger — 10 evidence-graded core findings, a 4-layer capability framework, 8 proven capability combos, 9 anti-pattern combinations, a 12-dimension production ledger (with real failure records from a running agent), and a prioritized action checklist. Chinese primary; see [docs/](docs/).
 
+> ⚠️ **诚实声明**：主要论据来自 arXiv 2026 预印本（未经完整同行评审）+ 单实例生产账本（N=1）。关键数字带证据分级，推翻信号清单见 [AGENTS.md](AGENTS.md)——若出现推翻信号，相应结论作废并在此修订。
+
 ---
 
 ## 📂 文档地图
@@ -15,6 +17,10 @@
 | [docs/12-dim-production-ledger.md](docs/12-dim-production-ledger.md) | 12 维实机账本（静态六维 + 动态六维），每维带真实案例与翻车记录 | 自己也养 agent 的人 |
 | [docs/repo-map.md](docs/repo-map.md) | 14 维 × GitHub 仓库地图（各维度头部仓库 + 选型要点 + 组合提示，star/活跃度实测于 2026-09-03） | 选型时查 |
 | [docs/cheatsheet.md](docs/cheatsheet.md) | Combo 速查卡：正例 C1-C8 / 反模式 K1-K9 / P0-P2 检查清单 | 干活时贴手边 |
+| [docs/failure-cases.md](docs/failure-cases.md) | **翻车案例集**：9 个真实静默故障（现象→误判→根因→修复→教训）+ 跨案例模式总结 | 装系统前必读 |
+| [templates/canary-questions.md](templates/canary-questions.md) | Canary 题组模板：评测防作弊（满分即作弊证据），10 条模板题 + 接入点 | 建评测集时 |
+| [templates/memory_eviction.py](templates/memory_eviction.py) | 记忆淘汰公式参考实现（recency/freq/centrality/age 四维评分，隔离不直删） | 记忆库治理 |
+| [templates/success-criteria.md](templates/success-criteria.md) | 失效判据模板：五问 + 可复制模板 + 真实示例 | 立项时写下来 |
 
 ## 🎯 十条核心结论（30 秒版）
 

@@ -13,6 +13,10 @@ A playbook for enhancing production AI agents: evidence-graded findings (harness
 - [12-Dim Production Ledger](docs/12-dim-production-ledger.md): per-dimension practices and real failure records from one production agent (N=1, 2026-08~11)
 - [Repo Map](docs/repo-map.md): 14-dimension curated GitHub repo map (star/activity snapshot 2026-09-03)
 - [Cheat Sheet](docs/cheatsheet.md): quick-reference combos, anti-patterns, action checklist
+- [Failure Cases](docs/failure-cases.md): 9 real silent-failure cases (phenomenon/misjudgment/root cause/fix/lesson)
+- [Canary Questions Template](templates/canary-questions.md): evaluation anti-cheating template (full score = evidence of cheating)
+- [Memory Eviction Reference](templates/memory_eviction.py): executable 4-factor eviction scoring script
+- [Success Criteria Template](templates/success-criteria.md): falsifiability template for long-term investments
 
 ## Evidence grading legend
 

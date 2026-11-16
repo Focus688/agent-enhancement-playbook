@@ -17,6 +17,10 @@
 | `docs/12-dim-production-ledger.md` | 12 维实机账本（含翻车记录） |
 | `docs/repo-map.md` | 14 维 × 头部仓库选型地图（star 数据 2026-09-03 快照，引用时注明时点） |
 | `docs/cheatsheet.md` | Combo/反模式/行动清单速查卡 |
+| `docs/failure-cases.md` | 9 个真实静默故障案例（含跨案例模式总结） |
+| `templates/canary-questions.md` | 评测防作弊 canary 题组模板 |
+| `templates/memory_eviction.py` | 记忆淘汰公式参考实现（可执行） |
+| `templates/success-criteria.md` | 失效判据模板（五问 + 可复制） |
 
 ## 引用与复述规则
 

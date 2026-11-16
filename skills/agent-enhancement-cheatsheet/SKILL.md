@@ -1,0 +1,61 @@
+---
+name: agent-enhancement-cheatsheet
+description: "Production AI agent enhancement quick reference: 8 evidence-graded capability combos (C1-C8), 9 anti-pattern combinations (K1-K9), and a P0-P2 action checklist for making agents stronger via harness/combo engineering instead of model upgrades. Use when designing, auditing, or upgrading an agent system's tools/memory/skills/evaluation/evolution loop."
+license: MIT
+---
+
+# Agent Enhancement Cheat Sheet
+
+> Agent 能力 = 基础模型 × 能力组件 × 组合质量。组合压倒单项：固定模型换 harness 的性能方差是换模型的 7.80 倍。证据分级：🟢 亲验 / 🔵 提取 / 🟡 转引。完整方法论见仓库 docs/。
+
+## ✅ 正例组合 C1-C8
+
+| # | 组合 | 配方要点 |
+|---|---|---|
+| C1 | 技能 × 执行门 | 技能卡（任务+签名+轨迹+验证分）→ 按解法聚类压缩成三段式 → 真实回放 ≥ 在位版本-0.02 才入库。无门自写 = -1.3pp |
+| C2 | 工具 × 代码执行 × 文件系统 | 工具定义变文件树按需读取（150K→2K token）；循环/错误处理在沙箱跑，模型只看结果 |
+| C3 | 校验装在 Graph 层不在 Loop 层 | 独立 verifier 节点；确定性门话语权 > LLM 裁判（+15.6%） |
+| C4 | 记忆 × 遥测 × 淘汰公式 | 一份访问日志三处复用：淘汰（recency 0.35/freq 0.25/centrality 0.20/age 0.20 起步）+ 检索去冗余 + 技能准入 |
+| C5 | 搜索 × 假设分支 × 证据聚合 | 发散时 ≤5 条假设并行有界搜索，聚合证据不比答案（+13.3pp，省 35% 调用） |
+| C6 | 模型 × 降级链而非智能路由 | 主模型+fallback+按任务分池 ≈ 昂贵路由器，且更便宜 |
+| C7 | 评估 × 早停 | 中间结局预测，注定失败的提前止损（省 13-26% 步数） |
+| C8 | 组合进化 StarHarness | LLM 出假设、程序化 verifier 出判据；+20-35pp 且跨模型可迁移 |
+
+## ☠️ 反模式 K1-K9
+
+| # | 别这么配 | 一句话防御 |
+|---|---|---|
+| K1 | 长记忆 + 大 top-K 双拉满 | 防御放管理阶段（隔离/淘汰），别指望排序 |
+| K2 | 自生成技能无执行门 | 真实回放准入（=C1） |
+| K3 | LLM 当自己的裁判 | 评测集混 canary 题：满分即作弊 |
+| K4 | 静态回放评测换模型 | 换模型必跑固定回归题组 |
+| K5 | 工具/技能堆叠 >10-15 个 | 工具面当预算管，宁少勿多 |
+| K6 | 上下文耦合任务拆多 agent | 决策链留单 agent，只读探索才拆 |
+| K7 | 小模型/短任务上长程机制 | 确认发散后才激活（fail-closed） |
+| K8 | 模型升级后沿用旧 combo 参数 | 升级必重测 |
+| K9 | 用 agent 内部思维流做检索表征 | 用结构化稳定信号（查询历史/访问日志） |
+
+## 🚀 行动清单 P0-P2
+
+**🔴 P0（本周，改配置/流程）**
+- [ ] 技能准入执行门：真实回放 ≥ 在位版本-0.02 才落盘
+- [ ] 记忆写入溯源：来源标签 + 推断类隔离区 + 7 天无访问淘汰
+- [ ] 工具面年检：>10-15 个即收，schema 重叠即合并
+- [ ] 复盘留痕：日志补结构化字段（触发源/工具链/置信/结论）
+
+**🟡 P1（两周，新增脚本/cron）**
+- [ ] 统一遥测层：记忆/技能/检索/胜负聚一张表，一料三吃
+- [ ] 质量门加 canary：满分即报警
+- [ ] 模型升级重测协议：固定 20 题回归，通过才切
+- [ ] Code Mode 试点：多工具场景改「工具文件树+代码聚合」
+
+**🟢 P2（一个月，评估性实验）**
+- [ ] TRACE 式自动复盘：失败会话逆序归因
+- [ ] EarlyEval 式评估早停：长任务中间结局预测
+- [ ] 多 agent 授权分级：默认只读、写白名单、授权逐级赋予
+
+## ⚠️ 节奏铁律
+
+- C2 阶段加记忆 = 浪费（还没有稳定任务模式可记）
+- C4 之前上多 agent 编排 = 负优化（通信开销 > 收益）
+- **新增能力必须针对当前主要失效模式，且修复收益可测量**

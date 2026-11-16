@@ -1,0 +1,25 @@
+# llms.txt — Agent Enhancement Playbook
+
+> Machine-readable index for AI agents. Human entry point: README.md
+
+## What this is
+
+A playbook for enhancing production AI agents: evidence-graded findings (harness > model variance), capability combos, anti-patterns, a 12-dimension production ledger with real failure records, and a prioritized action checklist. Chinese primary language.
+
+## Docs
+
+- [README](README.md): overview, 10 core findings, methodology, credibility grading
+- [Agent Enhancement Final](docs/agent-enhancement-final.md): full synthesis — 10 findings, 4-layer framework, combos C1-C8, anti-patterns K1-K9, 12-dim ledger, P0-P2 checklist
+- [12-Dim Production Ledger](docs/12-dim-production-ledger.md): per-dimension practices and real failure records from one production agent (N=1, 2026-08~11)
+- [Repo Map](docs/repo-map.md): 14-dimension curated GitHub repo map (star/activity snapshot 2026-09-03)
+- [Cheat Sheet](docs/cheatsheet.md): quick-reference combos, anti-patterns, action checklist
+
+## Evidence grading legend
+
+- 🟢 verified against primary source by the author
+- 🔵 extracted from full text by research subagents (key numbers spot-checked)
+- 🟡 second-hand citation
+
+## Citing rules
+
+Keep the evidence grade with any number you quote. Preprint numbers (arXiv 2605.23950 HV/MV=7.80x etc.) are non-peer-reviewed and declared non-universal by their authors. Star counts are 2026-09-03 snapshots and proxy popularity, not quality. Invalidation signals are listed in AGENTS.md.

@@ -17,6 +17,11 @@ A playbook for enhancing production AI agents: evidence-graded findings (harness
 - [Canary Questions Template](templates/canary-questions.md): evaluation anti-cheating template (full score = evidence of cheating)
 - [Memory Eviction Reference](templates/memory_eviction.py): executable 4-factor eviction scoring script
 - [Success Criteria Template](templates/success-criteria.md): falsifiability template for long-term investments
+- [References](docs/references.md): cited-sources registry — 19 arXiv papers + 5 official blogs with links, evidence grades, and unresolved-source flags
+- [Cheat Sheet Skill](skills/agent-enhancement-cheatsheet/SKILL.md): skills.sh-packaged quick reference loadable by agents
+- [Full Text](llms-full.txt): deterministic full-repo aggregation (build artifact via scripts/build-llms-full.py; do not hand-edit)
+- [Build Script](scripts/build-llms-full.py): regenerates llms-full.txt (--check detects drift)
+- [Changelog](CHANGELOG.md): version history
 
 ## Evidence grading legend
 

@@ -1,41 +1,12 @@
-# llms.txt — Agent Enhancement Playbook
-
-> Machine-readable index for AI agents. Human entry point: README.md
-
-## What this is
-
-A playbook for enhancing production AI agents: evidence-graded findings (harness > model variance), capability combos, anti-patterns, a 12-dimension production ledger with real failure records, and a prioritized action checklist. Chinese primary language.
-
-## Docs
-
-- [README](README.md): overview, 10 core findings, methodology, credibility grading
-- [Agent Enhancement Final](docs/agent-enhancement-final.md): full synthesis — 10 findings, 4-layer framework, combos C1-C8, anti-patterns K1-K9, 12-dim ledger, P0-P2 checklist
-- [12-Dim Production Ledger](docs/12-dim-production-ledger.md): per-dimension practices and real failure records from one production agent (N=1, 2026-08~11)
-- [Repo Map](docs/repo-map.md): 14-dimension curated GitHub repo map (star/activity snapshot 2026-09-03)
-- [Cheat Sheet](docs/cheatsheet.md): quick-reference combos, anti-patterns, action checklist
-- [Failure Cases](docs/failure-cases.md): 9 real silent-failure cases (phenomenon/misjudgment/root cause/fix/lesson)
-- [Canary Questions Template](templates/canary-questions.md): evaluation anti-cheating template (full score = evidence of cheating)
-- [Memory Eviction Reference](templates/memory_eviction.py): executable 4-factor eviction scoring script
-- [Success Criteria Template](templates/success-criteria.md): falsifiability template for long-term investments
-
-## Evidence grading legend
-
-- 🟢 verified against primary source by the author
-- 🔵 extracted from full text by research subagents (key numbers spot-checked)
-- 🟡 second-hand citation
-
-## Citing rules
-
-Keep the evidence grade with any number you quote. Preprint numbers (arXiv 2605.23950 HV/MV=7.80x etc.) are non-peer-reviewed and declared non-universal by their authors. Star counts are 2026-09-03 snapshots and proxy popularity, not quality. Invalidation signals are listed in AGENTS.md.
-
----
-
-# Full Content
+# agent-enhancement-playbook — 全文聚合（llms-full.txt）
+# 本文件由 scripts/build-llms-full.py 确定性生成，请勿手工编辑。
+# 改任何源文件后运行: python3 scripts/build-llms-full.py
+# 检测漂移: python3 scripts/build-llms-full.py --check
 
 
-## FILE: README.md
 
-```
+<!-- ===== SOURCE: README.md ===== -->
+
 # 🚀 Agent Enhancement Playbook（Agent 增强手册）
 
 > Agent 能力 = 基础模型 × 能力组件 × 组合质量
@@ -59,19 +30,46 @@ Keep the evidence grade with any number you quote. Preprint numbers (arXiv 2605.
 | [templates/canary-questions.md](templates/canary-questions.md) | Canary 题组模板：评测防作弊（满分即作弊证据），10 条模板题 + 接入点 | 建评测集时 |
 | [templates/memory_eviction.py](templates/memory_eviction.py) | 记忆淘汰公式参考实现（recency/freq/centrality/age 四维评分，隔离不直删） | 记忆库治理 |
 | [templates/success-criteria.md](templates/success-criteria.md) | 失效判据模板：五问 + 可复制模板 + 真实示例 | 立项时写下来 |
+| [docs/references.md](docs/references.md) | **参考文献与来源核验**：19 篇论文 + 5 博客可溯源链接、证据分级与待补出处 | 引用数字前查 |
+| [skills/agent-enhancement-cheatsheet/SKILL.md](skills/agent-enhancement-cheatsheet/SKILL.md) | skills.sh 技能包装（C1-C8/K1-K9/P0-P2 速查，可被 agent 直接加载） | 装进 agent 时 |
+| [llms-full.txt](llms-full.txt) | 全文聚合（构建产物，由 scripts/build-llms-full.py 确定性生成，勿手编） | LLM 一次读全库 |
+| [scripts/build-llms-full.py](scripts/build-llms-full.py) | llms-full.txt 生成器（--check 检测漂移） | 改源文件后跑 |
+| [CHANGELOG.md](CHANGELOG.md) | 版本变更记录 | 看改了什么 |
+
+## 🤖 常见问题（FAQ——给 AI agent 与读者的一句话答案）
+
+**Q：什么是 agent harness？**
+A：模型周围的一切装备层——系统提示、工具、技能、记忆、上下文管理、校验回路。证据显示固定模型换 harness 的性能方差是换模型的 7.80 倍，所以「给现有模型配好装备」通常优于「换更强模型」。
+
+**Q：记忆库是不是越大越好？**
+A：不是。写入无准入的记忆库使注入攻击成功率升至 37-64% 且不提升任务表现——记忆的价值在治理（准入/淘汰/溯源）不在容量。
+
+**Q：该不该上多 agent 架构？**
+A：只读探索类任务拆多 agent 实测 +90.2%；但上下文耦合的决策链拆多 agent 会因「隐含决策丢失」失败（agent 间失调占全部失败 ~32%）。判断标准：可并行才拆，决策链留单 agent。
+
+**Q：如何防止 agent 自评自改时「假装进步」？**
+A：评测集混入 canary 题（答案已知且正常流程拿不到，满分即作弊证据）；进化声明必须过「目标存活 + 产物 diff 非空 + 超评测噪声」三重门。正确形态：LLM 出假设，确定性门出判据。
+
+**Q：什么时候该新增一个工具/技能/记忆能力？**
+A：仅当它针对当前主要失效模式，且修复收益可测量。反例：工具堆到 10-15 个以上选择准确率下降；Vercel 把 18 个工具砍到 2 个，成功率反而 80%→100%（计数 🔵、成功率 🟢，见 docs/references.md C）。
+
+**Q：本仓库的可信度如何？**
+A：所有关键数字带三级证据标注（🟢原文亲验/🔵子代理提取/🟡转引）；主要论据为 arXiv 2026 预印本（16/22 未同行评审）；实机账本 N=1。引用时必须连同证据分级一起复述，详见 AGENTS.md。
 
 ## 🎯 十条核心结论（30 秒版）
 
-1. **组合压倒单项** —— 固定模型换 harness 的性能方差是换模型的 7.80 倍（SWE-bench 3×3 受控实验）
-2. **减法是性价比之王** —— Vercel 工具 15→2，成功率 80%→100%；Anthropic 代码执行替代直连 MCP，工具开销 -98.7%
-3. **先建回路再加能力** —— 加一个独立验证步骤，任务成功率 +15.6%（MAST）
-4. **记忆的价值在治理不在容量** —— 写入无准入 → 注入攻击成功率 37-64%
-5. **技能价值在准入门不在数量** —— 人写技能 +16.2pp，模型自写 -1.3pp；带执行回放准入门 +17.2pp
-6. **模型自演化会集体漏掉「状态与校验」** —— 77.8% 失败归因于 harness 缺陷
-7. **自评自改的经济学** —— 评估消耗 99.97% 算力，agent 读缓存答案拿满分掩盖 68% 真实能力
-8. **多 agent 是方向对才有效** —— 只读探索 +90.2%；决策链拆多 agent 会崩
-9. **智能路由天花板比想象低** —— 21 种路由方法 top5 只差 0.22pp；主模型+fallback+分池 ≈ 最优形态
-10. **递归派生有风险相变** —— 危害概率 9.68%→51.86%；派生要自由，授权逐级收紧
+1. **组合压倒单项** —— 固定模型换 harness 的性能方差是换模型的 7.80 倍（SWE-bench 3×3 受控实验 🟢；预印本，仅 100 题子集）
+2. **减法是性价比之王** —— Vercel 工具 18→2（计数 🔵），成功率 80%→100% 🟢；Anthropic 代码执行替代直连 MCP，工具开销 -98.7% 🟢
+3. **先建回路再加能力** —— 加一个独立验证步骤，任务成功率 +15.6%（MAST 🟢）
+4. **记忆的价值在治理不在容量** —— 写入无准入 → 注入攻击成功率 37-64% 🔵
+5. **技能价值在准入门不在数量** —— 人写技能 +16.2pp、模型自写 -1.3pp 🟡；带执行回放准入门 +17.2pp 🟢
+6. **模型自演化会集体漏掉「状态与校验」** —— 77.8% 失败归因于 harness 缺陷 🟢
+7. **自评自改的经济学** —— 评估消耗 99.97% 算力，agent 读缓存答案拿满分掩盖 68% 真实能力 🔵
+8. **多 agent 是方向对才有效** —— 只读探索 +90.2%（厂商内部 eval，打折看）；决策链拆多 agent 会崩 🟢
+9. **智能路由天花板比想象低** —— 21 种路由方法 top5 只差 0.22pp 🟢；主模型+fallback+分池 ≈ 最优形态
+10. **递归派生有风险相变** —— 危害概率 9.68%→51.86% 🟢（一手出处待补，见 references.md E）；派生要自由，授权逐级收紧
+
+> 每条数字的一手出处与核验状态见 [docs/references.md](docs/references.md)；标 ⚪ 待补的出处补充前不得视为已溯源。
 
 ## 🧭 三句话方法论
 
@@ -87,18 +85,16 @@ Keep the evidence grade with any number you quote. Preprint numbers (arXiv 2605.
 
 MIT
 
-```
 
-## FILE: AGENTS.md
+<!-- ===== SOURCE: AGENTS.md ===== -->
 
-```
 # AGENTS.md — 给 AI Agent 的阅读约定
 
 本仓库是「Agent 增强手册」：如何让生产级 AI agent 更强的方法论、证据与实机账本。人类读者请从 [README.md](README.md) 开始；Agent 读者请读本文件。
 
 ## 内容定位
 
-- **性质**：方法论 + 证据汇编 + 单实例生产账本。不是代码库，无可执行程序。
+- **性质**：方法论 + 证据汇编 + 单实例生产账本。不是代码库；仅含两个工具脚本（`templates/memory_eviction.py` 记忆淘汰参考实现、`scripts/build-llms-full.py` 全文聚合生成器）。
 - **可信度分级**（全文通用，引用时请保留）：🟢 = 作者回原文亲验；🔵 = 研究子代理全文提取（关键数字已抽查回验）；🟡 = 转引。
 - **主要来源**：arXiv 2026-05~09 预印本 22 篇（16 篇未同行评审）、Anthropic/Cloudflare/Chroma/Cognition 官方工程博客、GitHub API 仓库普查（star/活跃度实测于 2026-09-03）。
 - **样本声明**：12 维实机账本 N=1（单个生产 agent 实例，2026-08~11）。机制方向可信，具体参数（如淘汰权重 recency 0.35 等）需自行校准。
@@ -115,6 +111,11 @@ MIT
 | `templates/canary-questions.md` | 评测防作弊 canary 题组模板 |
 | `templates/memory_eviction.py` | 记忆淘汰公式参考实现（可执行） |
 | `templates/success-criteria.md` | 失效判据模板（五问 + 可复制） |
+| `docs/references.md` | 参考文献与来源核验（论文/博客链接 + 证据分级 + 待补出处） |
+| `skills/agent-enhancement-cheatsheet/SKILL.md` | skills.sh 技能包装（可被 agent 加载的速查卡） |
+| `llms-full.txt` | 全文聚合（构建产物，scripts/build-llms-full.py 生成，勿手编） |
+| `scripts/build-llms-full.py` | llms-full.txt 确定性生成器（--check 检测漂移） |
+| `CHANGELOG.md` | 版本变更记录 |
 
 ## 引用与复述规则
 
@@ -125,19 +126,21 @@ MIT
 
 ## 更新协议
 
-内容随宿主生产实例持续修订；每次修订在对应文档顶部更新「合成/修订日期」。结构性变更（新增/删除维度）须同步更新 llms.txt。
+内容随宿主生产实例持续修订；每次修订在对应文档顶部更新「合成/修订日期」。结构性变更（新增/删除维度）须同步更新 llms.txt 与三入口文档地图（README/AGENTS/llms.txt）。
 
-```
+**llms-full.txt 是构建产物，禁止手工编辑**：改任何源文件后运行 `python3 scripts/build-llms-full.py` 重新生成；提交前跑 `python3 scripts/build-llms-full.py --check`，报 DRIFT 即说明全文聚合与源文件不一致，必须重新生成。新增源文件须同时加入生成脚本的 SOURCES 列表与本文件文档地图。
 
-## FILE: docs/agent-enhancement-final.md
+**引用溯源**：新增/修改关键数字须在 `docs/references.md` 登记一手出处与核验层级；未能定位一手出处的标 ⚪ 待补，不得标 🟢。
 
-```
+
+<!-- ===== SOURCE: docs/agent-enhancement-final.md ===== -->
+
 # 🚀 Agent 增强终稿：仓库地图 × 组合规律 × 实机账本
 
 > Agent 能力 = 基础模型 × 能力组件 × 组合质量
 > 组件决定「能不能」，组合决定「稳不稳省不省」，账本决定「三个月后是资产还是负债」。
 
-📅 合成日期：2026-11-16 ｜ 证据分级：🟢 原文亲验 / 🔵 子代理全文提取 / 🟡 转引
+📅 合成日期：2026-11-16 ｜ 证据分级：🟢 原文亲验 / 🔵 子代理全文提取 / 🟡 转引 ｜ 一手出处见 [references.md](references.md)
 🧩 三源合成：①「14 维仓库地图×Combo 组合规律」研究（2026-09-03，408 仓库普查 + 22 篇论文精读，证据分级 🟢亲验/🔵子代理提取/🟡转引）②「AI Agent 能力倍增器」七层地图与 Combo 阶梯 ③Hermes 生产实例实机账本（2026-08~11，含翻车记录）。骨架取研究、案例取账本、行动取差距清单。
 
 ---
@@ -152,11 +155,11 @@ MIT
 
 **1. 组合压倒单项**：固定模型换 harness 的性能方差，是固定 harness 换模型的 7.80 倍（SWE-bench 3×3 受控实验 🟢）；9 组比较 6 组发生模型排序翻转。💡 **对你的直接含义：主模型降级省成本是对的——省下的钱该花在装备层，不是模型层。**
 
-**2. 减法是性价比之王**：Vercel 工具 15→2，成功率 80%→100% 🟢；Anthropic 用代码执行替代直连 MCP，工具开销 150K→2K token（-98.7%）🟢。
+**2. 减法是性价比之王**：Vercel 工具 18→2（计数 🔵，ZenML 转录；旧稿误作 15→2，见 references.md C），成功率 80%→100% 🟢；Anthropic 用代码执行替代直连 MCP，工具开销 150K→2K token（-98.7%）🟢。
 
 **3. 先建回路再加能力**：harness 增益主要来自「校验+恢复回路」而非更强模型/更多工具；加一个独立验证步骤，任务成功率 +15.6%（MAST 🟢）。
 
-**4. 记忆的价值在治理不在容量**：图谱记忆 vs 扁平向量整体 F1 反而 -0.050 🟢；记忆写入无准入 → 注入攻击成功率 37-64% 🔵。「什么都记」= 不加分只加险。
+**4. 记忆的价值在治理不在容量**：图谱记忆 vs 扁平向量整体 F1 反而 -0.050 🟢⚠️（审计未定位一手出处，且 MOSAIC 2607.16211 主张结构化记忆更优、方向相反，见 references.md E——此句存疑，待维护者补证）；记忆写入无准入 → 注入攻击成功率 37-64% 🔵。「什么都记」= 不加分只加险。
 
 **5. 技能价值在粒度与准入门不在数量**：人写技能 +16.2pp、模型自写 -1.3pp（低于无技能基线）🟡；带真实执行回放准入门的技能库 +17.2pp、12/12 全胜（p=0.000488，n=12 最小可达值）🟢。
 
@@ -194,7 +197,7 @@ MIT
 - **C5 搜索×假设分支×证据聚合**：HypoSearch——发散状态下 ≤5 条软假设并行有界搜索、聚合比证据不比答案，+13.3pp 且比多数投票省 29-35% 工具调用 🔵。
 - **C6 模型×降级链而非智能路由**：主模型+fallback+任务分池 ≈ 路由器效果且更便宜（路由增益大部分只是任务类型：21 种方法 top5 差 0.22pp 🟢 + 置信门控 78.0%@45K 🟢）。
 - **C7 评估×早停**：EarlyEval 提前终止注定失败/成功的 run，省 13-26% 步数、44% 输入 token，预测准确率 89-97% 🔵。
-- **C8 组合进化（StarHarness）**：LLM 出假设、程序化 verifier 做验收门（环境状态断言、违规即零分）——harness 进化 +20-35pp，只需 4-12 个被接受的改动；进化产物跨模型可迁移（33.1%→79.4%，+46.3pp）🟢。对照：HarnessDev 让模型自由自改，held-out 与反馈同向率仅 53.1%（掷硬币级）。
+- **C8 组合进化（StarHarness）**：LLM 出假设、程序化 verifier 做验收门（环境状态断言、违规即零分）——harness 进化 +20-35pp，只需 4-12 个被接受的改动；进化产物跨模型可迁移（33.1%→79.4%，+46.3pp）🟢。对照：HarnessDev 让模型自由自改，held-out 与反馈同向率仅 53.1%（掷硬币级）。⚠️ **反证校准**：2607.12227（Rethinking the Evaluation of Harness Evolution for Agents）指出 harness 进化**不能稳定赢过** test-time scaling、新任务泛化有限——+20-35pp 依赖任务分布与基线强度，非普适，跨任务/跨模型须重测（见 references.md D）。
 
 💡 **C8 的深意：自我进化的正确形态至此闭环——LLM 出假设，确定性门出判据**（与 C1 同构，作用对象从技能升到了整个 harness）。企业实测附带彩蛋：任务成功率 23.3%→43.7%、单任务成本 $1.23→$0.58（-53%）——**好的组合不是省钱和变强二选一**。
 
@@ -206,7 +209,7 @@ MIT
 - **K2** 自生成技能 × 无执行门 = 供应链污染。一条坏技能会无条件注入未来所有任务上下文；缺陷技能入池后跨会话持续毒化 🔵。
 - **K3** LLM 当自己的裁判 = 收敛到评委而非任务。PROCTOR 记录 11 种评估失败：读缓存答案拿 100% 满分掩盖 68% 真实能力、被污染的 ground truth 让优化器删掉正确规则 🔵。**防御：评测集混 canary——答案已知且正常流程拿不到的题，满分即报警。**
 - **K4** 静态回放评测 × 换模型 = 系统性错排。换模型会重写 61-94% 后续动作、仅 3% 回放状态仍有效 🟢——用固定轨迹评测给「模型 A/B」打分，结论基本是噪声。**换主模型后必须跑固定回归题组，通过才切。**
-- **K5** 工具/技能堆叠 × 上下文预算 = 注意力稀释。15→2 工具 +20pp 🟢；bloated toolset 是 Anthropic 点名的头号失败模式（人类工程师都说不清该用哪个工具，别指望 agent 说得清 🟡）。工具面当预算管，宁少勿多。
+- **K5** 工具/技能堆叠 × 上下文预算 = 注意力稀释。18→2 工具 +20pp（成功率 80%→100% 🟢，计数 🔵）；bloated toolset 是 Anthropic 点名的头号失败模式（人类工程师都说不清该用哪个工具，别指望 agent 说得清 🟡）。工具面当预算管，宁少勿多。
 - **K6** 多 agent × 上下文耦合任务 = 隐含决策丢失。子 agent 各自误解子任务，组合阶段无法收拾 🟡；agent 间失调占全部失败 ~32% 🟢。
 - **K7** 细粒度能力 × 小模型/短任务 = 开销反噬。复杂动作空间小模型学不动、短预算下长程机制反而拖累 🔵。长程机制必须「确认发散/确认多跳」后才激活（fail-closed）。
 - **K8** 为某模型调好的 harness × 换模型 = 可能负收益。Opus 造的搜索 harness 换 Gemini 执行，重复查询率 10.1%→88.2% 🔵。**任何 combo 调优参数在模型升级后必须重测。**
@@ -261,6 +264,8 @@ MIT
 - 22 篇论据中 16 篇是 2026-08/09 arXiv 预印本，未经完整同行评审，数字可能随版本修订（已尽量挑带显著性检验/CI 的）；HV/MV=7.80× 仅在 SWE-bench 100 题子集、3 个模型上测得，作者自声明不具普适性 🟢；+90.2% 多 agent 数字来自厂商内部 eval（打折看待）；MAST +15.6% 是单一 benchmark。
 - star 数是热度代理不是质量证明：普查已剔除 3 个明显刷星嫌疑仓库（star 增速异常 + README 营销口径），另有 3 个增速超官方旗舰但 watcher 比异常偏低（0.2-0.35% vs AutoGPT 0.83%），按热度信号而非质量信号对待。
 - 实机账本部分为单一实例（个人生产 agent），样本量 N=1，机制方向可信、具体参数需自行校准。
+- **2026-11-16 外部审计核验注记**（Focus/Vex）：一手出处与核验层级已集中登记于 [references.md](references.md)。19 篇论文存在性+标题、5 个官方博客 HTTP 200 已核验 🟢；repo-map 98 仓库逐个 gh api 核验全部存活。以下数字作者标 🟢/🔵，但审计**未能定位一手出处**，标 ⚪ 待维护者补充（补充前读者应自行核验，不得视为已溯源）：PROCTOR 五层护栏/11 种评估失败（C3/K3）、K4「61-94% rewrite/3% replay」、K8「10.1%→88.2%」、K9「5/5 unseen 掉分」、结论 4「图谱 vs 扁平 -0.050」（且 MOSAIC 2607.16211 方向相反）、结论 7「99.97%/45M/0.03%/68%」、结论 10「9.68%→51.86%」、结论 9「78.0%@45K 置信门控」。详见 references.md E。
+- **反证**：C8 的 +20-35pp 须连同 2607.12227 的反证一起引用（harness 进化不稳赢 test-time scaling），不可写成普适定论。
 
 ---
 
@@ -277,11 +282,9 @@ MIT
 📄 证据分级：🟢 原文亲验 ｜ 🔵 子代理全文提取 ｜ 🟡 转引
 🧩 合成自：14 维 Combo 研究（2026-09-03）+ 七层能力地图 + Hermes 实机账本（2026-08~11）· 随样本运行持续修订
 
-```
 
-## FILE: docs/12-dim-production-ledger.md
+<!-- ===== SOURCE: docs/12-dim-production-ledger.md ===== -->
 
-```
 # Agent 增强十二维框架——以一个跑了 3 个月的生产 Agent 为样本
 
 **定位**：市面上讲 Agent 的内容九成在讲「怎么用」，这份讲「怎么比别人强」。所有人用的都是同几个模型，差距不在模型，在模型外面那一圈系统。
@@ -439,140 +442,136 @@ MIT
 
 *样本与数据来源：Hermes Agent 生产实例（2026-08 ~ 2026-11），所有结论可追溯到实机日志与翻车记录。本文档随样本运行持续修订。*
 
-```
 
-## FILE: docs/repo-map.md
+<!-- ===== SOURCE: docs/repo-map.md ===== -->
 
-```
 # 🗺️ 14 维 × GitHub 仓库地图
 
 > 各能力维度的头部仓库 + 选型要点 + 组合提示。star/活跃度为 **2026-09-03 gh api 实测快照**（引用请注明时点）。活跃度：🟢 <60 天 ｜ 🟡 <180 天 ｜ 🔴 >180 天未更新。
 > ⚠️ star 是热度代理不是质量证明：普查剔除 3 个刷星嫌疑仓库（增速异常 + README 营销口径），另有 3 个增速超官方旗舰但 watcher 比异常偏低（按热度信号对待）。
 
 ## 3.1 搜索
-- firecrawl/firecrawl（175.9k 🟢）—— 网页搜索+抓取+交互的 context API，事实标准
-- browser-use/browser-use（112.1k 🟢）—— 把网站变成 agent 可操作界面
-- unclecode/crawl4ai（81.2k 🟢）/ D4Vinci/Scrapling（78.1k 🟢）—— LLM 友好爬虫双雄
-- bytedance/deer-flow（81.3k 🟢）—— 长程 SuperAgent harness，深度搜索完整参考实现
-- ItzCrazyKns/Vane（36.6k 🟢，原 Perplexica）—— 开源自建 Perplexity
-- anysearch-ai/anysearch-skill（6.0k 🟢）—— AI agent 统一实时搜索（低 star 高实用的品牌型 API 代表）
-- ⚠️ Alibaba-NLP/DeepResearch（19.9k 🔴188 天）—— 路线好，别当基建押注
+- [firecrawl/firecrawl](https://github.com/firecrawl/firecrawl)（175.9k 🟢）—— 网页搜索+抓取+交互的 context API，事实标准
+- [browser-use/browser-use](https://github.com/browser-use/browser-use)（112.1k 🟢）—— 把网站变成 agent 可操作界面
+- [unclecode/crawl4ai](https://github.com/unclecode/crawl4ai)（81.2k 🟢）/ [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling)（78.1k 🟢）—— LLM 友好爬虫双雄
+- [bytedance/deer-flow](https://github.com/bytedance/deer-flow)（81.3k 🟢）—— 长程 SuperAgent harness，深度搜索完整参考实现
+- [ItzCrazyKns/Vane](https://github.com/ItzCrazyKns/Vane)（36.6k 🟢，原 Perplexica）—— 开源自建 Perplexity
+- [anysearch-ai/anysearch-skill](https://github.com/anysearch-ai/anysearch-skill)（6.0k 🟢）—— AI agent 统一实时搜索（低 star 高实用的品牌型 API 代表）
+- ⚠️ [Alibaba-NLP/DeepResearch](https://github.com/Alibaba-NLP/DeepResearch)（19.9k 🔴188 天）—— 路线好，别当基建押注
 - **组合提示**：分水岭从「搜到」转向「何时承诺」——探索失败占深度搜索任务失败的 78%，先分叉假设再证据聚合（=C5）
 
 ## 3.2 记忆
-- thedotmack/claude-mem（93.1k 🟢）—— 会话压缩记忆层（⚠️ star 增速已达官方旗舰量级，按热度信号对待）
-- mem0ai/mem0（64.6k 🟢）—— drop-in 记忆 API 层，生态兼容最广
-- volcengine/OpenViking（35.3k 🟢）—— 自演化上下文数据库（记忆+知识+技能统一）
-- getzep/graphiti（30.5k 🟢）—— 实时时序知识图谱，时间推理专用
-- supermemoryai/supermemory（29.2k 🟢）—— 记忆+上下文引擎，可本地跑
-- topoteretes/cognee（30.4k 🟢）/ letta-ai/letta（24.6k 🟢）/ MemTensor/MemOS（11.2k 🟢）
+- [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem)（93.1k 🟢）—— 会话压缩记忆层（⚠️ star 增速已达官方旗舰量级，按热度信号对待）
+- [mem0ai/mem0](https://github.com/mem0ai/mem0)（64.6k 🟢）—— drop-in 记忆 API 层，生态兼容最广
+- [volcengine/OpenViking](https://github.com/volcengine/OpenViking)（35.3k 🟢）—— 自演化上下文数据库（记忆+知识+技能统一）
+- [getzep/graphiti](https://github.com/getzep/graphiti)（30.5k 🟢）—— 实时时序知识图谱，时间推理专用
+- [supermemoryai/supermemory](https://github.com/supermemoryai/supermemory)（29.2k 🟢）—— 记忆+上下文引擎，可本地跑
+- [topoteretes/cognee](https://github.com/topoteretes/cognee)（30.4k 🟢）/ [letta-ai/letta](https://github.com/letta-ai/letta)（24.6k 🟢）/ [MemTensor/MemOS](https://github.com/MemTensor/MemOS)（11.2k 🟢）
 - **组合提示**：必须与「生命周期治理」组合，单独堆是负资产——先做 access 遥测+淘汰+last-write-wins，再考虑换存储结构（图谱表征实测输给扁平向量 -0.050 F1）
 
 ## 3.3 工具调用
-- punkpeye/awesome-mcp-servers（93.9k 🟢）+ modelcontextprotocol/servers（90.0k 🟢）—— MCP 生态目录与官方实现
-- microsoft/playwright-mcp（36.8k 🟢）—— 浏览器自动化官方级
-- ComposioHQ/composio（30.0k 🟢）—— 1000+ 工具集+工具检索+鉴权+沙箱，工具面治理标杆
-- jackwener/OpenCLI（28.9k 🟢）—— 把任意网站变成 CLI
-- Skyvern-AI/skyvern（22.9k 🟢）—— 视觉+DOM 双模浏览器工作流
-- browserbase/stagehand（24.1k 🟢）/ e2b-dev/E2B（13.7k 🟢）—— 浏览器 agent SDK / 安全沙箱基建
+- [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)（93.9k 🟢）+ [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)（90.0k 🟢）—— MCP 生态目录与官方实现
+- [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp)（36.8k 🟢）—— 浏览器自动化官方级
+- [ComposioHQ/composio](https://github.com/ComposioHQ/composio)（30.0k 🟢）—— 1000+ 工具集+工具检索+鉴权+沙箱，工具面治理标杆
+- [jackwener/OpenCLI](https://github.com/jackwener/OpenCLI)（28.9k 🟢）—— 把任意网站变成 CLI
+- [Skyvern-AI/skyvern](https://github.com/Skyvern-AI/skyvern)（22.9k 🟢）—— 视觉+DOM 双模浏览器工作流
+- [browserbase/stagehand](https://github.com/browserbase/stagehand)（24.1k 🟢）/ [e2b-dev/E2B](https://github.com/e2b-dev/E2B)（13.7k 🟢）—— 浏览器 agent SDK / 安全沙箱基建
 - **组合提示**：头号 combo = 「工具→文件系统→代码 API」渐进披露（=C2）；⚠️ 工具 >10-15 个后选择准确率下降，工具面当预算管
 
 ## 3.4 Skill 调用 / 准入
-- obra/superpowers（281.0k 🟢）—— skills 框架+开发方法论，事实标杆（⚠️ watcher/star 比偏低，热度信号）
-- anthropics/skills（173.3k 🟢）—— 官方 SKILL.md 规范源头
-- VoltAgent/awesome-agent-skills（33.7k 🟢）/ hesreallyhim/awesome-claude-code（53.4k 🟢）—— 生态货架
-- agentskills/agentskills（24.9k 🟢）—— Agent Skills 开放规范（跨 Claude Code/Cursor/Hermes 通用）
-- microsoft/SkillOpt（16.7k 🟢）—— 文本空间技能优化器（把技能当可训练参数迭代）
+- [obra/superpowers](https://github.com/obra/superpowers)（281.0k 🟢）—— skills 框架+开发方法论，事实标杆（⚠️ watcher/star 比偏低，热度信号）
+- [anthropics/skills](https://github.com/anthropics/skills)（173.3k 🟢）—— 官方 SKILL.md 规范源头
+- [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills)（33.7k 🟢）/ [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code)（53.4k 🟢）—— 生态货架
+- [agentskills/agentskills](https://github.com/agentskills/agentskills)（24.9k 🟢）—— Agent Skills 开放规范（跨 Claude Code/Cursor/Hermes 通用）
+- [microsoft/SkillOpt](https://github.com/microsoft/SkillOpt)（16.7k 🟢）—— 文本空间技能优化器（把技能当可训练参数迭代）
 - **组合提示**：「新增技能」必须与「校验执行门」组合（=C1）；技能多了之后 SkillOps（生命周期治理）反成瓶颈
 
 ## 3.5 提示词
-- dair-ai/Prompt-Engineering-Guide（78.0k 🟡）—— 教程库，但重心已从 prompt 转向 context engineering
-- stanfordnlp/dspy（37.7k 🟢）—— 「编程而非提示」，声明式 pipeline+自动优化（GEPA/MIPROv2）
-- microsoft/promptflow（11.2k 🟢）/ zou-group/textgrad（3.7k 🟢）
-- dottxt-ai/outlines（15.7k 🟢）/ 567-labs/instructor（13.8k 🟢）—— 结构化输出双子星（与校验维度结合最紧）
+- [dair-ai/Prompt-Engineering-Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)（78.0k 🟡）—— 教程库，但重心已从 prompt 转向 context engineering
+- [stanfordnlp/dspy](https://github.com/stanfordnlp/dspy)（37.7k 🟢）—— 「编程而非提示」，声明式 pipeline+自动优化（GEPA/MIPROv2）
+- [microsoft/promptflow](https://github.com/microsoft/promptflow)（11.2k 🟢）/ [zou-group/textgrad](https://github.com/zou-group/textgrad)（3.7k 🟢）
+- [dottxt-ai/outlines](https://github.com/dottxt-ai/outlines)（15.7k 🟢）/ [567-labs/instructor](https://github.com/567-labs/instructor)（13.8k 🟢）—— 结构化输出双子星（与校验维度结合最紧）
 - **组合提示**：孤立提示词技巧已接近零收益（模型越强越不需要咒语）；但作为 harness 组件（系统提示=控制面、技能文件=按需加载提示片段）依然关键
 
 ## 3.6 知识库 / RAG
-- langgenius/dify（154.3k 🟢）/ langchain-ai/langchain（145.6k 🟢）—— 平台级
-- infiniflow/ragflow（90.0k 🟢）—— 深度文档理解 RAG 引擎
-- upstash/context7（61.6k 🟢）—— 实时库文档 MCP，代码知识专用
-- run-llama/llama_index（52.0k 🟢）
-- HKUDS/LightRAG（39.4k 🟢）/ microsoft/graphrag（35.8k 🟢）—— 图谱 RAG 代表
-- VectifyAI/PageIndex（35.5k 🟢）—— 无向量、推理式 RAG（文档树索引），长 PDF 黑马
-- vibrantlabsai/ragas（15.6k 🟡）—— RAG 评估事实标准（KB×校验的天然桥）
+- [langgenius/dify](https://github.com/langgenius/dify)（154.3k 🟢）/ [langchain-ai/langchain](https://github.com/langchain-ai/langchain)（145.6k 🟢）—— 平台级
+- [infiniflow/ragflow](https://github.com/infiniflow/ragflow)（90.0k 🟢）—— 深度文档理解 RAG 引擎
+- [upstash/context7](https://github.com/upstash/context7)（61.6k 🟢）—— 实时库文档 MCP，代码知识专用
+- [run-llama/llama_index](https://github.com/run-llama/llama_index)（52.0k 🟢）
+- [HKUDS/LightRAG](https://github.com/HKUDS/LightRAG)（39.4k 🟢）/ [microsoft/graphrag](https://github.com/microsoft/graphrag)（35.8k 🟢）—— 图谱 RAG 代表
+- [VectifyAI/PageIndex](https://github.com/VectifyAI/PageIndex)（35.5k 🟢）—— 无向量、推理式 RAG（文档树索引），长 PDF 黑马
+- [vibrantlabsai/ragas](https://github.com/vibrantlabsai/ragas)（15.6k 🟡）—— RAG 评估事实标准（KB×校验的天然桥）
 - **组合提示**：RAG 价值在「增量」不在「相关」——按边际信息增益重排优于堆候选数；检索 top-K 与风险单调耦合（K=1→7 攻击成功率 <12%→>36%）；必须带 provenance 来源标签
 
 ## 3.7 上下文
-- headroomlabs-ai/headroom（68.7k 🟢）—— 工具输出/日志/RAG 块进模型前压缩
-- muratcankoylan/Agent-Skills-for-Context-Engineering（17.9k 🟢）—— 上下文工程技能库（两篇综述引用为奠基）
-- microsoft/LLMLingua（6.6k 🟢）—— 20× prompt 压缩经典
-- ai-boost/awesome-harness-engineering（4.0k 🟢）—— harness 工程 13 原语清单（普查中信息密度最高）
-- wquguru/harness-books（2.9k 🟢）—— 两本 harness 设计哲学书
+- [headroomlabs-ai/headroom](https://github.com/headroomlabs-ai/headroom)（68.7k 🟢）—— 工具输出/日志/RAG 块进模型前压缩
+- [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)（17.9k 🟢）—— 上下文工程技能库（两篇综述引用为奠基）
+- [microsoft/LLMLingua](https://github.com/microsoft/LLMLingua)（6.6k 🟢）—— 20× prompt 压缩经典
+- [ai-boost/awesome-harness-engineering](https://github.com/ai-boost/awesome-harness-engineering)（4.0k 🟢）—— harness 工程 13 原语清单（普查中信息密度最高）
+- [wquguru/harness-books](https://github.com/wquguru/harness-books)（2.9k 🟢）—— 两本 harness 设计哲学书
 - **组合提示**：Chroma《Context Rot》实测 18 个模型——任务难度不变、只加长输入，性能即降且非均匀。「上下文是有限注意力预算」是一切 combo 的物理约束；compaction 先清工具结果、笔记外置、子 agent 只回 1-2K 摘要
 
 ## 3.8 模型路由 / serving
-- BerriAI/litellm（57.9k 🟢）—— 100+ provider 网关事实标准
-- musistudio/claude-code-router（37.0k 🟢）—— 本地多模型控制面
-- vllm-project/vllm（90.8k 🟢）/ sgl-project/sglang（33.6k 🟢）/ ggml-org/llama.cpp（126.9k 🟢）—— serving 三支柱
-- tensorzero/tensorzero（11.7k 🟢）—— 网关+评估+优化一体
-- ⚠️ lm-sys/RouteLLM（5.4k 🔴754 天）—— 经典但停摆
+- [BerriAI/litellm](https://github.com/BerriAI/litellm)（57.9k 🟢）—— 100+ provider 网关事实标准
+- [musistudio/claude-code-router](https://github.com/musistudio/claude-code-router)（37.0k 🟢）—— 本地多模型控制面
+- [vllm-project/vllm](https://github.com/vllm-project/vllm)（90.8k 🟢）/ [sgl-project/sglang](https://github.com/sgl-project/sglang)（33.6k 🟢）/ [ggml-org/llama.cpp](https://github.com/ggml-org/llama.cpp)（126.9k 🟢）—— serving 三支柱
+- [tensorzero/tensorzero](https://github.com/tensorzero/tensorzero)（11.7k 🟢）—— 网关+评估+优化一体
+- ⚠️ [lm-sys/RouteLLM](https://github.com/lm-sys/RouteLLM)（5.4k 🔴754 天）—— 经典但停摆
 - **组合提示**：路由增益大部分只是任务类型（21 种方法 top5 差 0.22pp，离 oracle 10-30pp）；便宜规则（置信度门控、按任务分池）≈ 昂贵路由器（=C6）
 
 ## 3.9 规划
-- langchain-ai/langgraph（41.0k 🟢）—— 图状态机，耐久规划 + checkpoint
-- FoundationAgents/MetaGPT（70.2k 🟢）/ FoundationAgents/OpenManus（58.2k 🟢）—— 多角色协作 / 通用 harness 参考实现
-- crewAIInc/crewAI（58.0k 🟢）/ microsoft/agent-framework（13.3k 🟢）/ openai/openai-agents-python（29.2k 🟢）/ google/adk-python（21.4k 🟢）/ pydantic/pydantic-ai（19.7k 🟢）
-- huggingface/smolagents（29.1k 🟢）—— 代码即动作的最小 loop
-- ⚠️ openai/swarm 已被 Agents SDK 取代；princeton-nlp/tree-of-thought-llm 属研究代码性质
+- [langchain-ai/langgraph](https://github.com/langchain-ai/langgraph)（41.0k 🟢）—— 图状态机，耐久规划 + checkpoint
+- [FoundationAgents/MetaGPT](https://github.com/FoundationAgents/MetaGPT)（70.2k 🟢）/ [FoundationAgents/OpenManus](https://github.com/FoundationAgents/OpenManus)（58.2k 🟢）—— 多角色协作 / 通用 harness 参考实现
+- [crewAIInc/crewAI](https://github.com/crewAIInc/crewAI)（58.0k 🟢）/ [microsoft/agent-framework](https://github.com/microsoft/agent-framework)（13.3k 🟢）/ [openai/openai-agents-python](https://github.com/openai/openai-agents-python)（29.2k 🟢）/ [google/adk-python](https://github.com/google/adk-python)（21.4k 🟢）/ [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai)（19.7k 🟢）
+- [huggingface/smolagents](https://github.com/huggingface/smolagents)（29.1k 🟢）—— 代码即动作的最小 loop
+- ⚠️ [openai/swarm](https://github.com/openai/swarm) 已被 Agents SDK 取代；[princeton-nlp/tree-of-thought-llm](https://github.com/princeton-nlp/tree-of-thought-llm) 属研究代码性质
 - **组合提示**：规划维度最大失败源是「任务目标本身没定清楚」（MAST 系统设计类占 44%）——任务简报写「目标+约束+完成判据」三件套，完成判据必须可机检
 
 ## 3.10 校验
-- promptfoo/promptfoo（24.8k 🟢）—— prompt/agent/RAG 测试+红队，CI 集成
-- confident-ai/deepeval（18.1k 🟢）—— LLM 评估框架
-- guardrails-ai/guardrails（7.3k 🟢）/ NVIDIA-NeMo/Guardrails（7.0k 🟢）—— 输出护栏
-- BoundaryML/baml（9.1k 🟢）—— 把校验写进类型系统
+- [promptfoo/promptfoo](https://github.com/promptfoo/promptfoo)（24.8k 🟢）—— prompt/agent/RAG 测试+红队，CI 集成
+- [confident-ai/deepeval](https://github.com/confident-ai/deepeval)（18.1k 🟢）—— LLM 评估框架
+- [guardrails-ai/guardrails](https://github.com/guardrails-ai/guardrails)（7.3k 🟢）/ [NVIDIA-NeMo/Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)（7.0k 🟢）—— 输出护栏
+- [BoundaryML/baml](https://github.com/BoundaryML/baml)（9.1k 🟢）—— 把校验写进类型系统
 - **组合提示**：校验是全部维度中「必须组合」的维度——没有独立校验的记忆=污染源、技能=供应链、自改进=放大器（=C3）
 
 ## 3.11 灰度测试 / 评测
-- langfuse/langfuse（34.1k 🟢）—— trace+实验+评分+A/B 一体，自托管首选
-- mlflow/mlflow（27.8k 🟢）/ comet-ml/opik（21.8k 🟢）
-- evidentlyai/evidently（7.9k 🟢）—— 漂移与质量监控
-- Helicone/helicone（6.1k 🟢）—— 网关侧观测
-- SWE-bench/SWE-bench（5.8k 🟢）/ UKGovernmentBEIS/inspect_ai（2.7k 🟢）—— 本仓库大量 harness 数字的原生基准与官方评测框架
+- [langfuse/langfuse](https://github.com/langfuse/langfuse)（34.1k 🟢）—— trace+实验+评分+A/B 一体，自托管首选
+- [mlflow/mlflow](https://github.com/mlflow/mlflow)（27.8k 🟢）/ [comet-ml/opik](https://github.com/comet-ml/opik)（21.8k 🟢）
+- [evidentlyai/evidently](https://github.com/evidentlyai/evidently)（7.9k 🟢）—— 漂移与质量监控
+- [Helicone/helicone](https://github.com/Helicone/helicone)（6.1k 🟢）—— 网关侧观测
+- [SWE-bench/SWE-bench](https://github.com/SWE-bench/SWE-bench)（5.8k 🟢）/ [UKGovernmentBEIS/inspect_ai](https://github.com/UKGovernmentBEIS/inspect_ai)（2.7k 🟢）—— 本仓库大量 harness 数字的原生基准与官方评测框架
 - **组合提示**：灰度的真义 = 用最少算力获得统计意义上的放行决策（同准确率系统的人审需求可差 10pp）；评测集混 canary 防作弊（=K3 防御）
 
 ## 3.12 复盘修复
-- Arize-ai/phoenix（11.3k 🟢）—— trace 分析+评估（OTel GenAI 标准）
-- AgentOps-AI/agentops（5.8k 🟢）—— 运行监控/成本
-- matt1398/claude-devtools（3.9k 🟢）—— Claude Code 会话/工具调用检视器
+- [Arize-ai/phoenix](https://github.com/Arize-ai/phoenix)（11.3k 🟢）—— trace 分析+评估（OTel GenAI 标准）
+- [AgentOps-AI/agentops](https://github.com/AgentOps-AI/agentops)（5.8k 🟢）—— 运行监控/成本
+- [matt1398/claude-devtools](https://github.com/matt1398/claude-devtools)（3.9k 🟢）—— Claude Code 会话/工具调用检视器
 - **组合提示**：TRACE 配方——从轨迹隐式不满信号（改写/追问/弃会，频率是满意信号 2 倍）做逆序归因 → 修复建议 CRUD 准确率 96%、端到端修复有效 82% 🔵。前置条件：全量结构化轨迹留痕，没留痕就没有自动复盘
 
 ## 3.13 高效 Loop
-- OpenHands/OpenHands（86.0k 🟢）—— 事件驱动 agent loop 最大开源实现
-- ruvnet/ruflo（70.3k 🟢）—— meta-harness/swarm 编排
-- cline/cline（67.4k 🟢）—— IDE/CLI/SDK 三形态编码 loop
-- HKUDS/nanobot（47.7k 🟢）/ zhayujie/CowAgent（46.8k 🟢）—— 轻量全功能个人 agent 运行时
-- Significant-Gravitas/AutoGPT（187.1k 🟢）—— 历史原型（现转型平台）；agent0ai/agent-zero（19.1k 🟢）/ elizaOS/eliza（19.2k 🟢）—— 高装机独立运行时
-- lemony-ai/cascadeflow（4.0k 🟢）—— loop 内级联成本/延迟/质量决策
+- [OpenHands/OpenHands](https://github.com/OpenHands/OpenHands)（86.0k 🟢）—— 事件驱动 agent loop 最大开源实现
+- [ruvnet/ruflo](https://github.com/ruvnet/ruflo)（70.3k 🟢）—— meta-harness/swarm 编排
+- [cline/cline](https://github.com/cline/cline)（67.4k 🟢）—— IDE/CLI/SDK 三形态编码 loop
+- [HKUDS/nanobot](https://github.com/HKUDS/nanobot)（47.7k 🟢）/ [zhayujie/CowAgent](https://github.com/zhayujie/CowAgent)（46.8k 🟢）—— 轻量全功能个人 agent 运行时
+- [Significant-Gravitas/AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)（187.1k 🟢）—— 历史原型（现转型平台）；[agent0ai/agent-zero](https://github.com/agent0ai/agent-zero)（19.1k 🟢）/ [elizaOS/eliza](https://github.com/elizaOS/eliza)（19.2k 🟢）—— 高装机独立运行时
+- [lemony-ai/cascadeflow](https://github.com/lemony-ai/cascadeflow)（4.0k 🟢）—— loop 内级联成本/延迟/质量决策
 - **组合提示**：最小可用 loop = ReAct + 显式撤销/压缩语义 + 停止规则——backtrack（撤销污染）+ summary（压缩入栈）两个显式动作是长程预算能兑现的前提（去掉平均 -6.2pp）
 
 ## 3.14 迭代改善
-- PrimeIntellect-ai/prime-agent（19.7k 🟢）—— 自改进 RLM agent（架构拆解见 12 维账本）
-- lsdefine/GenericAgent（14.1k 🟢）—— 从 3.3K 行种子自生长技能树
-- NousResearch/hermes-agent-self-evolution（5.2k 🟢）—— GEPA/DSPy 进化线
-- Q00/ouroboros（5.8k 🟢）—— 「agent 自己变聪明，人只握评分命令」的 loop OS
-- facebookresearch/HyperAgents（2.7k 🟢）/ ShengranHu/ADAS（1.6k 🔴）—— DGM/ADAS 论文官方码停更，思想仍对，押注绕开仓库本身
+- [PrimeIntellect-ai/prime-agent](https://github.com/PrimeIntellect-ai/prime-agent)（19.7k 🟢）—— 自改进 RLM agent（架构拆解见 12 维账本）
+- [lsdefine/GenericAgent](https://github.com/lsdefine/GenericAgent)（14.1k 🟢）—— 从 3.3K 行种子自生长技能树
+- [NousResearch/hermes-agent-self-evolution](https://github.com/NousResearch/hermes-agent-self-evolution)（5.2k 🟢）—— GEPA/DSPy 进化线
+- [Q00/ouroboros](https://github.com/Q00/ouroboros)（5.8k 🟢）—— 「agent 自己变聪明，人只握评分命令」的 loop OS
+- [facebookresearch/HyperAgents](https://github.com/facebookresearch/HyperAgents)（2.7k 🟢）/ [ShengranHu/ADAS](https://github.com/ShengranHu/ADAS)（1.6k 🔴）—— DGM/ADAS 论文官方码停更，思想仍对，押注绕开仓库本身
 - **组合提示**：自我改进已知天花板——反馈集打分涨、held-out 同向率仅 53.1%；泛化测量要贵于改进本身，否则进化的是噪声（正确形态 = C8：LLM 出假设，确定性门出判据）
 
 ---
 
 *快照声明：以上 star/活跃度数据采集于 2026-09-03（gh api 实测），仅作选型时点参考。热度过高且 watcher/star 比异常（<0.35%，对照 AutoGPT 0.83%）的仓库按「热度信号」而非「质量信号」对待。*
 
-```
 
-## FILE: docs/cheatsheet.md
+<!-- ===== SOURCE: docs/cheatsheet.md ===== -->
 
-```
 # Combo 速查卡（Cheat Sheet）
 
 > 正例照着配，反模式绕着走，清单照着做。证据分级：🟢 亲验 / 🔵 提取 / 🟡 转引。
@@ -629,11 +628,9 @@ MIT
 - C4 之前上多 agent 编排 = 负优化（通信开销 > 收益）
 - **新增能力必须针对当前主要失效模式，且修复收益可测量**
 
-```
 
-## FILE: docs/failure-cases.md
+<!-- ===== SOURCE: docs/failure-cases.md ===== -->
 
-```
 # 💥 翻车案例集（Failure Cases）
 
 > 每个案例：现象 → 当时的误判 → 根因 → 修复法 → 通用教训。全部来自一个生产 agent（2026-08~11）的真实运行记录，机制描述公开、无敏感信息。**共同主题：故障几乎都是「静默」的——不报错，甚至探活全绿。**
@@ -721,11 +718,160 @@ MIT
 
 **引用提示**：复述这些案例时请带上「单一实例 N=1」的口径——它们证明的是这类故障**存在且会静默存活**，不是各系统的普遍频率。
 
-```
 
-## FILE: templates/canary-questions.md
+<!-- ===== SOURCE: docs/references.md ===== -->
 
-```
+# 参考文献与来源核验（references）
+
+> 本文件为全库引用的可溯源清单，修复「零 URL」缺陷（P0-1）。新增/修改关键数字须在此登记一手出处。
+> **核验层级（2026-11-16，Focus/Vex 外部审计）**：
+> - 🟢 已核验 = arXiv API 确认论文存在 + 标题匹配，或官方博客 HTTP 200 + 标题匹配；摘要级数字已交叉核对的另行标注。
+> - 🔵 正文级数字 = 作者声明，审计未逐一回验论文正文（只验存在性与摘要）。
+> - ⚪ 待补 = 审计未能定位一手出处，**待维护者补充**，补充前不得标 🟢。
+> 引用纪律（AGENTS.md 规则 1）：引数字必带分级；预印本标「未经同行评审」。
+
+## A. arXiv 论文（存在性 + 标题已核验 🟢，2026-11-16）
+
+| ID | 标题 | 用于 | 数字核验状态 | 链接 |
+|---|---|---|---|---|
+| 2605.23950 | Stop Comparing LLM Agents Without Disclosing the Harness | 结论1 / 结语 / ledger#1（HV/MV 方差分解） | 7.80×（正文，仅 SWE-bench 100 题子集）🔵 | https://arxiv.org/abs/2605.23950 |
+| 2608.24804 | StarHarness: Evolving Harnesses with Stratified Search for Enterprise Environments | 结论2 / C8 / 结语 | +20–35pp（摘要确认）🟢；33.1%→79.4%/+46.3pp（正文）🔵 | https://arxiv.org/abs/2608.24804 |
+| 2609.01437 | HarnessDev: Can LLMs Create and Evolve Their Own Agent Harness? | 结论6 / C8 对照 | 77.8%/53.1%（正文）🔵 | https://arxiv.org/abs/2609.01437 |
+| 2609.01294 | Explore Before Committing: Hypothesis-Guided Search for Deep Research Agents（HypoSearch） | C5 | +13.3pp、省 29–35% 调用（正文）🔵 | https://arxiv.org/abs/2609.01294 |
+| 2602.12670 | SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks | C1 / K4 | 87 tasks、33.9%→50.5%（+16.6pp 聚合，摘要）🟢；+16.2pp/-1.3pp（正文分配置）🔵 | https://arxiv.org/abs/2602.12670 |
+| 2609.02783 | EarlyEval: Cheaper Agent Evaluation via Early Outcome Prediction | C7 / ledger#7 | 13–26% steps、44.1% input tokens、89–97% accuracy（摘要确认）🟢 | https://arxiv.org/abs/2609.02783 |
+| 2608.09153 | TRACE: TRajectory Attribution for Automated Context Engineering | K8 / ledger#8 / P2#9 | 96% operation、72.7% root-cause、82% end-to-end fix（摘要确认）🟢 | https://arxiv.org/abs/2608.09153 |
+| 2503.13657 | Why Do Multi-Agent LLM Systems Fail?（MAST） | 结论3 / C3 / K6 / repo-map 3.9 | +15.6% verification、~32% miscoordination（正文）🔵 | https://arxiv.org/abs/2503.13657 |
+| 2608.01050 | Don't Offer What Can't Be Done: Deterministic Executability Gating for LLM Skill Selection at Scale（Wix Helpmate） | C1 执行门 | 756.6K messages / 174,927 retained（摘要）；+17.2pp/12-12（正文）🔵 | https://arxiv.org/abs/2608.01050 |
+| 2608.09168 | From Relevance to Execution Utility: Reward-Aware Dynamic Execution Gating for Skill-Based LLM Agents（RADEG） | C1 执行门（对照） | — | https://arxiv.org/abs/2608.09168 |
+| 2609.13889 | When Malicious Instructions Persist: Persistent Memory Poisoning Attack on Harness-Based Agents（PMPA） | 结论4 / K1 | 37–64%（正文）🔵 | https://arxiv.org/abs/2609.13889 |
+| 2606.00150 | Persona Attack: Incremental Memory Injection Jailbreak Attack against Large Language Models | K2 | — | https://arxiv.org/abs/2606.00150 |
+| 2607.28103 | MIND: Lightweight and Effective Memory Injection Defense for LLM Agents via Intent-Aware Information Bottleneck | K1 防御 | -62% attack / -3–5% utility（正文）🔵 | https://arxiv.org/abs/2607.28103 |
+| 2603.04445 | Dynamic Model Routing and Cascading for Efficient LLM Inference: A Survey | 结论9 / C6 | 0.22pp、21 methods（正文）🔵 | https://arxiv.org/abs/2603.04445 |
+| 2609.11987 | Harness or Model? Isolating the Harness Effect in Agentic Coding with a Contamination-Controlled Private Suite | K4（部分） | 9.0pp/23.7pp on 61 repo/19 contest tasks、cost 1.3–1.6×（摘要）🟢；K4「61–94% rewrite」非此摘要数字 ⚪ | https://arxiv.org/abs/2609.11987 |
+| 2608.27912 | ITER: Interaction-Aware Retrieval for Agentic Search | C4 检索去冗余 | redundancy negatives（摘要确认主题）🟢；-5.8pp（正文）🔵 | https://arxiv.org/abs/2608.27912 |
+| 2608.08311 | Ouroboros: A Self-Developing Frontier Coding Agent with Reviewed Core Evolution | repo-map Q00/ouroboros；结论7 候选 | 99.97%/45M/0.03%（正文，待核）⚪ | https://arxiv.org/abs/2608.08311 |
+| 2607.16211 | Accurate and Efficient Long-Term Memory for LLM Agents（MOSAIC 系统） | 结论4 相关（**方向相反**，见 E） | 主张结构化记忆优于扁平 ⚠️ | https://arxiv.org/abs/2607.16211 |
+| 2607.12227 | Rethinking the Evaluation of Harness Evolution for Agents | C8 证伪校准（反证） | harness 进化不稳赢 test-time scaling、新任务泛化有限（摘要）🟢 | https://arxiv.org/abs/2607.12227 |
+
+## B. 官方博客（HTTP 200 + 标题已核验 🟢，2026-11-16）
+
+| 来源 | 标题 | 用于 | 链接 |
+|---|---|---|---|
+| Anthropic | How we built our multi-agent research system | 结论8（+90.2%、token×15） | https://www.anthropic.com/engineering/built-multi-agent-research-system |
+| Anthropic | Code execution with MCP for efficient agents | 结论2 / C2（150K→2K、-98.7%） | https://www.anthropic.com/engineering/code-execution-with-mcp |
+| Chroma | Context Rot: How Increasing Input Tokens Impacts LLM Performance | 结论5（18 模型上下文退化） | https://research.trychroma.com/context-rot |
+| Cognition | Don't Build Multi-Agents | 结论3 / K6（决策链拆多 agent 会崩） | https://cognition.ai/blog/dont-build-multi-agents |
+| Vercel | We removed 80% of our agent's tools | 结论2 / K5（80%→100%） | https://vercel.com/blog/we-removed-80-percent-of-our-agents-tools |
+
+## C. Vercel 工具计数更正（审计发现）
+
+- 旧稿写「15→2 工具」🟢 —— **与一手来源不符，已更正**。
+- 一手原文（Vercel 博客）标题为「We removed 80% of our agent's tools」，正文确认成功率 **80%→100%**、3.5× 更快、37% 更少 token（🟢 已核验）。
+- 工具具体计数：ZenML LLMOps 数据库转录为 **18→2**（🔵 二手）；原文 HTML 为 JS 渲染，计数未清晰提取。
+- 处理：正文改用「18→2」并标注计数为 🔵（ZenML 转录），成功率 80%→100% 保持 🟢（原文核验）。ZenML 条目：https://www.zenml.io/llmops-database/simplifying-text-to-sql-agents-by-removing-80-of-tools
+- ⚠️ 18→2 = 移除 89%，与标题「80%」略有出入，可能原文基线不同；**精确计数待维护者回验原文**。
+
+## D. 反证校准（C8）
+
+- 2607.12227（Rethinking the Evaluation of Harness Evolution for Agents）指出 harness 进化**不能稳定赢过** test-time scaling，且新任务泛化有限。
+- 据此 C8「harness 进化 +20–35pp」应保留**证伪信号**：收益依赖任务分布与基线强度，非普适；跨任务/跨模型须重测。本手册 C8 已含证伪条款，此论文为其提供一手支撑。引用 +20–35pp 时须连同此反证一起复述。
+
+## E. 待维护者补充的一手出处 ⚪（审计未定位，补充前不得标 🟢）
+
+| 主张 | 现状 |
+|---|---|
+| PROCTOR 五层护栏 / 11 种评估失败 / 68% / 100% 满分（C3、K3） | gh + arXiv 标题搜索均未定位名为 PROCTOR 的 agent 评估系统；疑为内部系统或未公开论文，**待补一手出处** |
+| K4「61–94% rewrite、3% replay valid」 | 2609.11987 摘要的「61」是任务数非 rewrite 比例；具体出处待补 |
+| K8「10.1%→88.2%（Opus→Gemini 重复查询）」 | 未定位一手出处，待补 |
+| K9「5/5 unseen bases drop」 | 未定位一手出处，待补 |
+| 结论4「图谱 vs 扁平 F1 -0.050」 | MOSAIC（2607.16211）主张相反（结构化优于扁平）；-0.050 的具体出处待补，**勿引 MOSAIC 支撑此句** |
+| 结论7「99.97% compute / 45M tokens / 0.03% / 68%」 | Ouroboros（2608.08311）为候选，正文数字待核 |
+| 结论10「9.68%→51.86% / 51.10%」递归推导风险 | 候选 2609.31186 / 2610.35193（递归自改进安全），精确出处待核 |
+| 结论9「78.0%@45K / 73.8%@71.3K」置信门控 | 路由综述正文或另文，待核 |
+
+## F. repo-map 仓库核验（2026-11-16）
+
+- repo-map 共 **98 个真实仓库条目，全部存活**（gh api 逐个核验，0 死亡）；已全部加 GitHub 链接。
+- 星数为 **2026-09-03 快照**，与实时值有漂移（如 headroom 68.7k→79.8k），引用须标快照日期。
+- tensorzero/tensorzero 已 archived（与 repo-map「归档只读」标注一致）。
+- 「meta-harness/swarm」为 ruflo 架构散文描述，**非仓库条目**（gh 404），不链接。
+- 刷星嫌疑剔除 3 / 降级 3 的判定见 repo-map 原文（热度信号 ≠ 质量）。
+
+## G. 核验局限（诚实声明）
+
+- 本审计核验到**论文存在性 + 标题 + 部分摘要级数字**；正文级具体数字（标 🔵 者）为作者声明，未逐一回验 PDF 正文。
+- 22 篇论文中 16 篇为预印本（未经同行评审），引用须保留此标注。
+- 7.80× 仅限 SWE-bench 100 题子集、3 个模型，作者自声明不普适。
+
+
+<!-- ===== SOURCE: skills/agent-enhancement-cheatsheet/SKILL.md ===== -->
+
+---
+name: agent-enhancement-cheatsheet
+description: "Production AI agent enhancement quick reference: 8 evidence-graded capability combos (C1-C8), 9 anti-pattern combinations (K1-K9), and a P0-P2 action checklist for making agents stronger via harness/combo engineering instead of model upgrades. Use when designing, auditing, or upgrading an agent system's tools/memory/skills/evaluation/evolution loop."
+license: MIT
+---
+
+# Agent Enhancement Cheat Sheet
+
+> Agent 能力 = 基础模型 × 能力组件 × 组合质量。组合压倒单项：固定模型换 harness 的性能方差是换模型的 7.80 倍。证据分级：🟢 亲验 / 🔵 提取 / 🟡 转引。完整方法论见仓库 docs/。
+
+## ✅ 正例组合 C1-C8
+
+| # | 组合 | 配方要点 |
+|---|---|---|
+| C1 | 技能 × 执行门 | 技能卡（任务+签名+轨迹+验证分）→ 按解法聚类压缩成三段式 → 真实回放 ≥ 在位版本-0.02 才入库。无门自写 = -1.3pp |
+| C2 | 工具 × 代码执行 × 文件系统 | 工具定义变文件树按需读取（150K→2K token）；循环/错误处理在沙箱跑，模型只看结果 |
+| C3 | 校验装在 Graph 层不在 Loop 层 | 独立 verifier 节点；确定性门话语权 > LLM 裁判（+15.6%） |
+| C4 | 记忆 × 遥测 × 淘汰公式 | 一份访问日志三处复用：淘汰（recency 0.35/freq 0.25/centrality 0.20/age 0.20 起步）+ 检索去冗余 + 技能准入 |
+| C5 | 搜索 × 假设分支 × 证据聚合 | 发散时 ≤5 条假设并行有界搜索，聚合证据不比答案（+13.3pp，省 35% 调用） |
+| C6 | 模型 × 降级链而非智能路由 | 主模型+fallback+按任务分池 ≈ 昂贵路由器，且更便宜 |
+| C7 | 评估 × 早停 | 中间结局预测，注定失败的提前止损（省 13-26% 步数） |
+| C8 | 组合进化 StarHarness | LLM 出假设、程序化 verifier 出判据；+20-35pp 且跨模型可迁移 |
+
+## ☠️ 反模式 K1-K9
+
+| # | 别这么配 | 一句话防御 |
+|---|---|---|
+| K1 | 长记忆 + 大 top-K 双拉满 | 防御放管理阶段（隔离/淘汰），别指望排序 |
+| K2 | 自生成技能无执行门 | 真实回放准入（=C1） |
+| K3 | LLM 当自己的裁判 | 评测集混 canary 题：满分即作弊 |
+| K4 | 静态回放评测换模型 | 换模型必跑固定回归题组 |
+| K5 | 工具/技能堆叠 >10-15 个 | 工具面当预算管，宁少勿多 |
+| K6 | 上下文耦合任务拆多 agent | 决策链留单 agent，只读探索才拆 |
+| K7 | 小模型/短任务上长程机制 | 确认发散后才激活（fail-closed） |
+| K8 | 模型升级后沿用旧 combo 参数 | 升级必重测 |
+| K9 | 用 agent 内部思维流做检索表征 | 用结构化稳定信号（查询历史/访问日志） |
+
+## 🚀 行动清单 P0-P2
+
+**🔴 P0（本周，改配置/流程）**
+- [ ] 技能准入执行门：真实回放 ≥ 在位版本-0.02 才落盘
+- [ ] 记忆写入溯源：来源标签 + 推断类隔离区 + 7 天无访问淘汰
+- [ ] 工具面年检：>10-15 个即收，schema 重叠即合并
+- [ ] 复盘留痕：日志补结构化字段（触发源/工具链/置信/结论）
+
+**🟡 P1（两周，新增脚本/cron）**
+- [ ] 统一遥测层：记忆/技能/检索/胜负聚一张表，一料三吃
+- [ ] 质量门加 canary：满分即报警
+- [ ] 模型升级重测协议：固定 20 题回归，通过才切
+- [ ] Code Mode 试点：多工具场景改「工具文件树+代码聚合」
+
+**🟢 P2（一个月，评估性实验）**
+- [ ] TRACE 式自动复盘：失败会话逆序归因
+- [ ] EarlyEval 式评估早停：长任务中间结局预测
+- [ ] 多 agent 授权分级：默认只读、写白名单、授权逐级赋予
+
+## ⚠️ 节奏铁律
+
+- C2 阶段加记忆 = 浪费（还没有稳定任务模式可记）
+- C4 之前上多 agent 编排 = 负优化（通信开销 > 收益）
+- **新增能力必须针对当前主要失效模式，且修复收益可测量**
+
+
+<!-- ===== SOURCE: templates/canary-questions.md ===== -->
+
 # 🐤 Canary 题组模板（评估防作弊）
 
 > 用途：给 agent / cron / 进化循环的评测集混入「canary 题」——**答案已知、且正常流程不可能拿到的题**。得满分即证明作弊（读了缓存/抄了答案键/评测泄漏），得零分才正常。对应反模式 K3。
@@ -784,104 +930,9 @@ MIT
 - 类型 A/B 的题目必须与真实评测题**格式一致**，否则 agent 可能靠「这题长得不像真题」反推出特殊处理。
 - 判定「答对」的阈值要写死在评测器里，不要让 LLM judge 现场裁量（judge 可被说服，见 K3）。
 
-```
 
-## FILE: templates/memory_eviction.py
+<!-- ===== SOURCE: templates/success-criteria.md ===== -->
 
-```
-#!/usr/bin/env python3
-"""记忆淘汰参考实现（C4：记忆 × 遥测 × 淘汰公式）
-
-原理：记忆库不设淘汰 = 上下文污染 + 攻击面放大（K1）。本脚本按四维评分淘汰：
-  score = w_recency * recency + w_freq * freq + w_centrality * centrality + w_age * age
-  score < EVICTION_THRESHOLD 的记忆进候选淘汰池（先隔离，不直接删——失效显式化优于静默丢失）。
-
-输入约定：一份带遥测的记忆导出 JSON（list of dicts）：
-  [{"id": str, "content": str, "created_at": iso8601, "last_accessed": iso8601,
-    "access_count": int, "scope": "global"|"session", "links": [id, ...]}, ...]
-
-权重为起步值（源自 2026-09 记忆治理研究），务必用你自己的数据校准：
-  recency 0.35 / freq 0.25 / centrality 0.20 / age 0.20
-用法：
-  python3 memory_eviction.py memories.json --now 2026-11-16T00:00:00Z \
-      [--threshold 0.25] [--isolate-dir ./quarantine] [--dry-run]
-"""
-import argparse, json, os
-from datetime import datetime, timezone
-
-
-def parse_ts(s):
-    return datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(timezone.utc)
-
-
-def evict(memories, now, threshold=0.25,
-          w_recency=0.35, w_freq=0.25, w_centrality=0.20, w_age=0.20,
-          half_life_days=30.0):
-    total = len(memories)
-    link_count = {}
-    for m in memories:
-        for lid in m.get("links", []):
-            link_count[lid] = link_count.get(lid, 0) + 1
-
-    scored = []
-    for m in memories:
-        # recency: 指数衰减的最近访问（半衰期默认 30 天）
-        days_since = max(0.0, (now - parse_ts(m["last_accessed"])).total_seconds() / 86400)
-        recency = 0.5 ** (days_since / half_life_days)
-        # freq: log 归一化的访问频次（1 次 → 0，100 次+ → 趋近 1）
-        freq = min(1.0, (m.get("access_count", 0)) ** 0.5 / 10.0)
-        # centrality: 被其他记忆引用的次数（图谱关联度）
-        centrality = min(1.0, link_count.get(m["id"], 0) / 5.0)
-        # age: 越老越倾向淘汰（防「古董记忆」永久占位）
-        age_days = (now - parse_ts(m["created_at"])).total_seconds() / 86400
-        age = min(1.0, age_days / 365.0)
-
-        score = (w_recency * recency + w_freq * freq
-                 + w_centrality * centrality + w_age * (1.0 - age))
-        scored.append({**m, "_score": round(score, 4),
-                       "_keep_reasons": {
-                           "recency": round(recency, 3), "freq": round(freq, 3),
-                           "centrality": round(centrality, 3), "age_keep": round(1 - age, 3)}})
-    return sorted(scored, key=lambda x: x["_score"])
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("memories_json")
-    ap.add_argument("--now", required=True, help="ISO8601 当前时间（保证可复现）")
-    ap.add_argument("--threshold", type=float, default=0.25)
-    ap.add_argument("--isolate-dir", default="./quarantine")
-    ap.add_argument("--dry-run", action="store_true")
-    args = ap.parse_args()
-
-    now = parse_ts(args.now)
-    memories = json.load(open(args.memories_json))
-    scored = evict(memories, now, args.threshold)
-
-    to_evict = [m for m in scored if m["_score"] < args.threshold]
-    print(f"total={len(scored)}  evict_candidates={len(to_evict)}  threshold={args.threshold}")
-    for m in to_evict:
-        print(f"  [{m['_score']}] {m['id']}: {m['content'][:60]!r}  {m['_keep_reasons']}")
-
-    if args.dry_run:
-        print("dry-run: 未写任何文件")
-        return
-    os.makedirs(args.isolate_dir, exist_ok=True)
-    out_path = os.path.join(args.isolate_dir, f"quarantined_{args.now[:10]}.json")
-    json.dump(to_evict, open(out_path, "w"), ensure_ascii=False, indent=2)
-    keep = [m for m in scored if m["_score"] >= args.threshold]
-    json.dump(keep, open(args.memories_json, "w"), ensure_ascii=False, indent=2)
-    print(f"isolated -> {out_path}  (隔离≠删除：隔离区保留 90 天供人工复查)")
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
-## FILE: templates/success-criteria.md
-
-```
 # 🎯 失效判据模板（Success Criteria）
 
 > 用途：给每个持续投入的方向（项目/产品线/技能/订阅）**事先写下**可量化的成功判据与清算日期。对应 12 维中的第 ⑫ 维。
@@ -935,4 +986,319 @@ if __name__ == "__main__":
 - **判据修订要有防火墙**：只允许「判据本身不合理」驱动修订，禁止「快到期了但我觉得有希望」驱动——后者就是沉没成本在说话。
 - **同一时间挂太多带判据的方向 = 没有判据**：建议同时活跃的带判据方向 ≤ 3 个。
 
+
+<!-- ===== SOURCE: templates/memory_eviction.py ===== -->
+
+```python
+#!/usr/bin/env python3
+"""记忆淘汰参考实现（C4：记忆 × 遥测 × 淘汰公式）
+
+原理：记忆库不设淘汰 = 上下文污染 + 攻击面放大（K1）。本脚本按四维评分淘汰：
+  score = w_recency*recency + w_freq*freq + w_centrality*centrality + w_age*(1 - age_norm)
+  其中 age_norm = min(1, 创建至今天数/365)：越老 age_norm 越大、(1-age_norm) 越小、
+  score 越低 → 越倾向淘汰（防「古董记忆」永久占位）。
+  score < threshold 的记忆进候选淘汰池（先隔离，不直接删——失效显式化优于静默丢失）。
+
+输入约定：一份带遥测的记忆导出 JSON（list of dicts）：
+  [{"id": str, "content": str, "created_at": iso8601, "last_accessed": iso8601,
+    "access_count": int, "scope": "global"|"session", "links": [id, ...]}, ...]
+  字段缺失不再崩溃：last_accessed 缺省回退 created_at；created_at 缺省时 age 取中性 0.5；
+  access_count 缺省 0；links 缺省 []；时间戳非法按缺省处理。
+
+权重为起步值（源自 2026-09 记忆治理研究），务必用你自己的数据校准：
+  recency 0.35 / freq 0.25 / centrality 0.20 / age 0.20
+
+安全默认（可逆性优先）：
+  - 默认不覆盖输入：保留项写到 <input>.kept.json，隔离项写到 isolate-dir/quarantined_<date>.json。
+  - --in-place 才覆盖输入，且覆盖前自动备份 <input>.bak-<UTC时间戳>。
+  - 隔离区默认保留 90 天（--quarantine-retention-days），过期文件按文件名日期自动清理（--no-prune 关闭）。
+
+用法：
+  python3 memory_eviction.py memories.json --now 2026-11-16T00:00:00Z \
+      [--threshold 0.25] [--isolate-dir ./quarantine] [--dry-run] [--in-place]
+  python3 memory_eviction.py --self-test   # 内置断言自检，不依赖外部文件
+"""
+import argparse, json, math, os, sys, tempfile
+from datetime import datetime, timezone
+
+
+def parse_ts(s):
+    """ISO8601 → UTC datetime；缺失/非法返回 None（不崩溃）。"""
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(str(s).replace("Z", "+00:00")).astimezone(timezone.utc)
+    except (ValueError, TypeError):
+        return None
+
+
+def evict(memories, now, threshold=0.25,
+          w_recency=0.35, w_freq=0.25, w_centrality=0.20, w_age=0.20,
+          half_life_days=30.0):
+    link_count = {}
+    for m in memories:
+        for lid in m.get("links", []) or []:
+            link_count[lid] = link_count.get(lid, 0) + 1
+
+    scored = []
+    for m in memories:
+        created = parse_ts(m.get("created_at"))
+        accessed = parse_ts(m.get("last_accessed")) or created
+        # recency: 指数衰减的最近访问（半衰期默认 30 天）；无任何时间戳 → 0（视为从未访问）
+        if accessed is None:
+            recency = 0.0
+        else:
+            days_since = max(0.0, (now - accessed).total_seconds() / 86400)
+            recency = 0.5 ** (days_since / half_life_days)
+        # freq: log 归一化的访问频次（1 次≈0.15，100 次→1.0）
+        freq = min(1.0, math.log1p(max(0, m.get("access_count", 0) or 0)) / math.log1p(100))
+        # centrality: 被其他记忆引用的次数（图谱关联度）
+        centrality = min(1.0, link_count.get(m.get("id"), 0) / 5.0)
+        # age: 越老越倾向淘汰；created_at 缺失 → 中性 0.5（不惩罚未知年龄）
+        if created is None:
+            age_keep = 0.5
+        else:
+            age_days = max(0.0, (now - created).total_seconds() / 86400)
+            age_keep = 1.0 - min(1.0, age_days / 365.0)
+
+        score = (w_recency * recency + w_freq * freq
+                 + w_centrality * centrality + w_age * age_keep)
+        scored.append({**m, "_score": round(score, 4),
+                       "_keep_reasons": {
+                           "recency": round(recency, 3), "freq": round(freq, 3),
+                           "centrality": round(centrality, 3), "age_keep": round(age_keep, 3)}})
+    return sorted(scored, key=lambda x: x["_score"])
+
+
+def prune_quarantine(isolate_dir, now, retention_days):
+    """按文件名日期清理超过保留期的隔离文件（兑现「保留 90 天」承诺）。"""
+    removed = []
+    if not os.path.isdir(isolate_dir):
+        return removed
+    for fn in sorted(os.listdir(isolate_dir)):
+        if not (fn.startswith("quarantined_") and fn.endswith(".json")):
+            continue
+        date_str = fn[len("quarantined_"):-len(".json")]
+        d = parse_ts(date_str + "T00:00:00Z")
+        if d is None:
+            continue
+        if (now - d).total_seconds() / 86400 > retention_days:
+            os.remove(os.path.join(isolate_dir, fn))
+            removed.append(fn)
+    return removed
+
+
+def main_argv(argv):
+    """供 self_test 调用 main 的入口（临时替换 sys.argv）。"""
+    old = sys.argv
+    sys.argv = ["memory_eviction.py"] + argv
+    try:
+        return main()
+    finally:
+        sys.argv = old
+
+
+def main():
+    ap = argparse.ArgumentParser(description="记忆淘汰参考实现（四维评分 + 隔离不直删）")
+    ap.add_argument("memories_json", nargs="?", help="记忆导出 JSON")
+    ap.add_argument("--now", help="ISO8601 当前时间（保证可复现）")
+    ap.add_argument("--threshold", type=float, default=0.25)
+    ap.add_argument("--isolate-dir", default="./quarantine")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--in-place", action="store_true", help="覆盖输入（自动先备份 .bak）")
+    ap.add_argument("--quarantine-retention-days", type=float, default=90.0)
+    ap.add_argument("--no-prune", action="store_true", help="不清理过期隔离文件")
+    ap.add_argument("--self-test", action="store_true", help="运行内置断言自检")
+    args = ap.parse_args()
+
+    if args.self_test:
+        return self_test()
+
+    if not args.memories_json or not args.now:
+        ap.error("需要 memories_json 与 --now（或用 --self-test）")
+    now = parse_ts(args.now)
+    if now is None:
+        ap.error(f"--now 非法 ISO8601: {args.now}")
+    with open(args.memories_json, encoding="utf-8") as f:
+        memories = json.load(f)
+    scored = evict(memories, now, args.threshold)
+    to_evict = [m for m in scored if m["_score"] < args.threshold]
+    keep = [m for m in scored if m["_score"] >= args.threshold]
+    print(f"total={len(scored)}  evict_candidates={len(to_evict)}  threshold={args.threshold}")
+    for m in to_evict:
+        print(f"  [{m['_score']}] {m.get('id')}: {str(m.get('content',''))[:60]!r}  {m['_keep_reasons']}")
+
+    if args.dry_run:
+        print("dry-run: 未写任何文件")
+        return 0
+
+    os.makedirs(args.isolate_dir, exist_ok=True)
+    out_path = os.path.join(args.isolate_dir, f"quarantined_{args.now[:10]}.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(to_evict, f, ensure_ascii=False, indent=2)
+
+    if args.in_place:
+        bak = f"{args.memories_json}.bak-{now.strftime('%Y%m%dT%H%M%SZ')}"
+        with open(args.memories_json, encoding="utf-8") as f:
+            original = f.read()
+        with open(bak, "w", encoding="utf-8") as f:
+            f.write(original)
+        with open(args.memories_json, "w", encoding="utf-8") as f:
+            json.dump(keep, f, ensure_ascii=False, indent=2)
+        print(f"in-place 覆盖输入（备份 -> {bak}）")
+    else:
+        kept_path = f"{args.memories_json}.kept.json"
+        with open(kept_path, "w", encoding="utf-8") as f:
+            json.dump(keep, f, ensure_ascii=False, indent=2)
+        print(f"kept -> {kept_path}（输入未改动；如需覆盖加 --in-place）")
+
+    pruned = [] if args.no_prune else prune_quarantine(args.isolate_dir, now, args.quarantine_retention_days)
+    print(f"isolated -> {out_path}  (隔离≠删除：保留 {args.quarantine_retention_days:.0f} 天供人工复查)")
+    if pruned:
+        print(f"pruned 过期隔离文件 {len(pruned)}: {pruned}")
+    return 0
+
+
+def self_test():
+    """内置断言：缺字段不崩溃 / 越老分越低 / log 频次 / 备份与隔离落地 / 90 天清理。"""
+    now = parse_ts("2026-11-16T00:00:00Z")
+    ok = 0
+
+    def check(cond, msg):
+        nonlocal ok
+        assert cond, "FAIL: " + msg
+        ok += 1
+        print("  PASS:", msg)
+
+    # 1. 缺字段 / 非法时间戳不崩溃
+    mem = [{"id": "a", "content": "no timestamps"},
+           {"id": "b", "content": "bad ts", "created_at": "not-a-date", "last_accessed": None},
+           {"id": "c", "content": "full", "created_at": "2026-11-01T00:00:00Z",
+            "last_accessed": "2026-11-15T00:00:00Z", "access_count": 50, "links": ["a"]}]
+    scored = evict(mem, now)
+    check(len(scored) == 3, "缺字段/非法时间戳不崩溃，3 条全部评分")
+    check(all("_score" in m for m in scored), "每条都有 _score")
+
+    # 2. 越老（创建久 + 久未访问）分越低
+    old = {"id": "old", "content": "antique", "created_at": "2020-01-01T00:00:00Z",
+           "last_accessed": "2020-01-01T00:00:00Z", "access_count": 0}
+    new = {"id": "new", "content": "fresh", "created_at": "2026-11-10T00:00:00Z",
+           "last_accessed": "2026-11-15T00:00:00Z", "access_count": 100}
+    s = {m["id"]: m["_score"] for m in evict([old, new], now)}
+    check(s["old"] < s["new"], f"古董记忆分({s['old']}) < 新鲜记忆分({s['new']})")
+
+    # 3. freq 用 log（100 次→1.0）
+    f100 = evict([{**new, "access_count": 100}], now)[0]["_keep_reasons"]["freq"]
+    check(abs(f100 - 1.0) < 1e-6, "freq log 归一化 100 次→1.0")
+
+    # 4. 文件落地：默认不覆盖输入 + 隔离写入 + 90 天清理 + --in-place 备份
+    with tempfile.TemporaryDirectory() as td:
+        inp = os.path.join(td, "mem.json")
+        with open(inp, "w", encoding="utf-8") as f:
+            json.dump([old, new], f)
+        iso = os.path.join(td, "quarantine")
+        os.makedirs(iso)
+        with open(os.path.join(iso, "quarantined_2026-01-01.json"), "w") as f:
+            f.write("[]")  # 预置过期隔离文件（距 now >90 天）
+        rc = main_argv([inp, "--now", "2026-11-16T00:00:00Z", "--isolate-dir", iso])
+        check(rc == 0, "默认运行 exit 0")
+        check(os.path.exists(inp + ".kept.json"), "默认写出 .kept.json")
+        with open(inp, encoding="utf-8") as f:
+            check(len(json.load(f)) == 2, "默认不覆盖输入（仍 2 条）")
+        check(os.path.exists(os.path.join(iso, "quarantined_2026-11-16.json")), "隔离文件写入")
+        check(not os.path.exists(os.path.join(iso, "quarantined_2026-01-01.json")),
+              "过期隔离文件被清理（90 天承诺生效）")
+        rc = main_argv([inp, "--now", "2026-11-16T00:00:00Z", "--isolate-dir", iso, "--in-place"])
+        baks = [x for x in os.listdir(td) if ".bak-" in x]
+        check(rc == 0 and len(baks) == 1, "--in-place 覆盖前生成 1 个 .bak 备份")
+        with open(inp, encoding="utf-8") as f:
+            check(len(json.load(f)) == 1, "--in-place 后输入只剩保留项")
+    print(f"SELF-TEST PASS ({ok} assertions)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
 ```
+
+
+<!-- ===== SOURCE: llms.txt ===== -->
+
+# llms.txt — Agent Enhancement Playbook
+
+> Machine-readable index for AI agents. Human entry point: README.md
+
+## What this is
+
+A playbook for enhancing production AI agents: evidence-graded findings (harness > model variance), capability combos, anti-patterns, a 12-dimension production ledger with real failure records, and a prioritized action checklist. Chinese primary language.
+
+## Docs
+
+- [README](README.md): overview, 10 core findings, methodology, credibility grading
+- [Agent Enhancement Final](docs/agent-enhancement-final.md): full synthesis — 10 findings, 4-layer framework, combos C1-C8, anti-patterns K1-K9, 12-dim ledger, P0-P2 checklist
+- [12-Dim Production Ledger](docs/12-dim-production-ledger.md): per-dimension practices and real failure records from one production agent (N=1, 2026-08~11)
+- [Repo Map](docs/repo-map.md): 14-dimension curated GitHub repo map (star/activity snapshot 2026-09-03)
+- [Cheat Sheet](docs/cheatsheet.md): quick-reference combos, anti-patterns, action checklist
+- [Failure Cases](docs/failure-cases.md): 9 real silent-failure cases (phenomenon/misjudgment/root cause/fix/lesson)
+- [Canary Questions Template](templates/canary-questions.md): evaluation anti-cheating template (full score = evidence of cheating)
+- [Memory Eviction Reference](templates/memory_eviction.py): executable 4-factor eviction scoring script
+- [Success Criteria Template](templates/success-criteria.md): falsifiability template for long-term investments
+- [References](docs/references.md): cited-sources registry — 19 arXiv papers + 5 official blogs with links, evidence grades, and unresolved-source flags
+- [Cheat Sheet Skill](skills/agent-enhancement-cheatsheet/SKILL.md): skills.sh-packaged quick reference loadable by agents
+- [Full Text](llms-full.txt): deterministic full-repo aggregation (build artifact via scripts/build-llms-full.py; do not hand-edit)
+- [Build Script](scripts/build-llms-full.py): regenerates llms-full.txt (--check detects drift)
+- [Changelog](CHANGELOG.md): version history
+
+## Evidence grading legend
+
+- 🟢 verified against primary source by the author
+- 🔵 extracted from full text by research subagents (key numbers spot-checked)
+- 🟡 second-hand citation
+
+## Citing rules
+
+Keep the evidence grade with any number you quote. Preprint numbers (arXiv 2605.23950 HV/MV=7.80x etc.) are non-peer-reviewed and declared non-universal by their authors. Star counts are 2026-09-03 snapshots and proxy popularity, not quality. Invalidation signals are listed in AGENTS.md.
+
+
+<!-- ===== SOURCE: CHANGELOG.md ===== -->
+
+# Changelog
+
+## v1.3 — 2026-11-16（质量审计修复）
+
+按 2026-11-16 质量评估（4 个 P0 + P1/P2）修复。Focus/Vex 审计，Pigman 维护提交。
+核验层级与一手出处见 `docs/references.md`。
+
+### P0 修复
+- **P0-1 全库零链接** → 新增 `docs/references.md`：19 篇 arXiv 论文 + 5 个官方博客的可溯源链接
+  （存在性/标题已核验 🟢），正文级数字标 🔵，未定位出处标 ⚪ 待维护者补充。
+  `docs/repo-map.md` 98 个仓库全部加 GitHub 链接（逐个 gh api 核验存活，0 死亡）。
+- **P0-2 memory_eviction.py 五缺陷** → 重写 `templates/memory_eviction.py`：
+  1. 缺字段/非法时间戳不再 KeyError 崩溃（parse_ts 容错 + .get 回退）；
+  2. docstring 公式与代码统一为 `w_age*(1-age_norm)`（越老越倾向淘汰）；
+  3. freq 注释与代码统一为 log 归一化；
+  4. 默认不覆盖输入（写 `.kept.json`），`--in-place` 才覆盖且自动 `.bak` 备份；
+  5. 「隔离区保留 90 天」落地为按文件名日期自动清理（`--quarantine-retention-days`）。
+  新增 `--self-test` 内置断言（缺字段/越老分低/log 频次/备份隔离/90 天清理）。
+- **P0-3 包装漂移** → `llms-full.txt` 改为构建产物：新增 `scripts/build-llms-full.py`
+  确定性生成（`--check` 检测漂移）；重新生成补齐 FAQ/英文摘要/SKILL.md/references；
+  三入口（README/AGENTS/llms.txt）文档地图补 `skills/`、`llms-full.txt`、`references.md`。
+  AGENTS.md 更新协议改为「改源文件后跑生成脚本 + --check 门」。
+- **P0-4 README 30 秒版无分级** → 10 条结论逐条加证据分级（🟢/🔵/⚪），与 AGENTS.md 规则 1 对齐。
+
+### P1/P2 修复
+- **反证校准 C8** → references.md D 节引入 2607.12227（harness 进化不稳赢 test-time scaling、
+  新任务泛化有限），C8 证伪条款获一手支撑。
+- **Vercel 计数更正** → 旧稿「15→2」与一手来源不符，更正为「18→2」（计数 🔵 ZenML 转录），
+  成功率 80%→100% 保持 🟢（原文核验）；详见 references.md C 节。
+- **AGENTS.md 更新协议** → 由人工同步改为脚本生成 + --check 门，根除漂移成因。
+
+### 核验声明（诚实边界）
+- 论文存在性 + 标题 + 部分摘要级数字已核验（2026-11-16）；正文级数字为作者声明（🔵），
+  未逐一回验 PDF 正文。22 篇中 16 篇预印本（未经同行评审）；7.80× 仅限 100 题子集。
+- repo-map 98 仓库全部存活（gh api 逐个核验）；星数为 2026-09-03 快照，引用须标日期。
+- 待维护者补充的一手出处见 references.md E 节（PROCTOR / K4 / K8 / K9 / 图谱-0.050 /
+  结论7 / 结论10 / 结论9 置信门控）。
+
+## v1.2 — 审计前基线（HEAD b737efd）
+- 方法论 + 证据汇编 + N=1 生产台账，skills.sh 包装，MIT。

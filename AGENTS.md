@@ -4,7 +4,7 @@
 
 ## 内容定位
 
-- **性质**：方法论 + 证据汇编 + 单实例生产账本。不是代码库，无可执行程序。
+- **性质**：方法论 + 证据汇编 + 单实例生产账本。不是代码库；仅含两个工具脚本（`templates/memory_eviction.py` 记忆淘汰参考实现、`scripts/build-llms-full.py` 全文聚合生成器）。
 - **可信度分级**（全文通用，引用时请保留）：🟢 = 作者回原文亲验；🔵 = 研究子代理全文提取（关键数字已抽查回验）；🟡 = 转引。
 - **主要来源**：arXiv 2026-05~09 预印本 22 篇（16 篇未同行评审）、Anthropic/Cloudflare/Chroma/Cognition 官方工程博客、GitHub API 仓库普查（star/活跃度实测于 2026-09-03）。
 - **样本声明**：12 维实机账本 N=1（单个生产 agent 实例，2026-08~11）。机制方向可信，具体参数（如淘汰权重 recency 0.35 等）需自行校准。
@@ -21,6 +21,11 @@
 | `templates/canary-questions.md` | 评测防作弊 canary 题组模板 |
 | `templates/memory_eviction.py` | 记忆淘汰公式参考实现（可执行） |
 | `templates/success-criteria.md` | 失效判据模板（五问 + 可复制） |
+| `docs/references.md` | 参考文献与来源核验（论文/博客链接 + 证据分级 + 待补出处） |
+| `skills/agent-enhancement-cheatsheet/SKILL.md` | skills.sh 技能包装（可被 agent 加载的速查卡） |
+| `llms-full.txt` | 全文聚合（构建产物，scripts/build-llms-full.py 生成，勿手编） |
+| `scripts/build-llms-full.py` | llms-full.txt 确定性生成器（--check 检测漂移） |
+| `CHANGELOG.md` | 版本变更记录 |
 
 ## 引用与复述规则
 
@@ -31,4 +36,8 @@
 
 ## 更新协议
 
-内容随宿主生产实例持续修订；每次修订在对应文档顶部更新「合成/修订日期」。结构性变更（新增/删除维度）须同步更新 llms.txt。
+内容随宿主生产实例持续修订；每次修订在对应文档顶部更新「合成/修订日期」。结构性变更（新增/删除维度）须同步更新 llms.txt 与三入口文档地图（README/AGENTS/llms.txt）。
+
+**llms-full.txt 是构建产物，禁止手工编辑**：改任何源文件后运行 `python3 scripts/build-llms-full.py` 重新生成；提交前跑 `python3 scripts/build-llms-full.py --check`，报 DRIFT 即说明全文聚合与源文件不一致，必须重新生成。新增源文件须同时加入生成脚本的 SOURCES 列表与本文件文档地图。
+
+**引用溯源**：新增/修改关键数字须在 `docs/references.md` 登记一手出处与核验层级；未能定位一手出处的标 ⚪ 待补，不得标 🟢。

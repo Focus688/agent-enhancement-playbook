@@ -1,11 +1,31 @@
 # 🚀 Agent Enhancement Playbook（Agent 增强手册）
 
+[![CI](https://github.com/Focus688/agent-enhancement-playbook/actions/workflows/ci.yml/badge.svg)](https://github.com/Focus688/agent-enhancement-playbook/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-00ffd5.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/Focus688/agent-enhancement-playbook?color=00ffd5)](https://github.com/Focus688/agent-enhancement-playbook/stargazers)
+
 > Agent 能力 = 基础模型 × 能力组件 × 组合质量
 > 组件决定「能不能」，组合决定「稳不稳省不省」，账本决定「三个月后是资产还是负债」。
 
 **English abstract**: A field-tested playbook for making production AI agents stronger — 10 evidence-graded core findings, a 4-layer capability framework, 8 proven capability combos, 9 anti-pattern combinations, a 12-dimension production ledger (with real failure records from a running agent), and a prioritized action checklist. Chinese primary; see [docs/](docs/).
 
 > ⚠️ **诚实声明**：主要论据来自 arXiv 2026 预印本（未经完整同行评审）+ 单实例生产账本（N=1）。关键数字带证据分级，推翻信号清单见 [AGENTS.md](AGENTS.md)——若出现推翻信号，相应结论作废并在此修订。
+
+## ⚡ Quick Start
+
+```bash
+# 1) 作为 skills.sh 技能装进 agent（先审后装，只装一个技能）
+npx skills add Focus688/agent-enhancement-playbook --list
+npx skills add Focus688/agent-enhancement-playbook --skill agent-enhancement-cheatsheet
+
+# 2) 直接跑记忆淘汰参考实现的自检（纯 stdlib，无依赖）
+python3 templates/memory_eviction.py --self-test
+
+# 3) 改过任何源文件后，确定性重建全文聚合并校验零漂移
+python3 scripts/build-llms-full.py && python3 scripts/build-llms-full.py --check
+```
+
+手动安装：把 `skills/agent-enhancement-cheatsheet/` 复制到 `~/.hermes/skills/`（Hermes Agent）或 `.claude/skills/`（Claude Code）。
 
 ---
 
@@ -45,7 +65,7 @@ A：评测集混入 canary 题（答案已知且正常流程拿不到，满分�
 A：仅当它针对当前主要失效模式，且修复收益可测量。反例：工具堆到 10-15 个以上选择准确率下降；Vercel 把 18 个工具砍到 2 个，成功率反而 80%→100%（计数 🔵、成功率 🟢，见 docs/references.md C）。
 
 **Q：本仓库的可信度如何？**
-A：所有关键数字带三级证据标注（🟢原文亲验/🔵子代理提取/🟡转引）；主要论据为 arXiv 2026 预印本（16/22 未同行评审）；实机账本 N=1。引用时必须连同证据分级一起复述，详见 AGENTS.md。
+A：所有关键数字带四级证据标注（🟢原文亲验 / 🔵子代理提取 / 🟡转引 / ⚪一手出处待补）；主要论据为 arXiv 2026 预印本（16/22 未同行评审）；实机账本 N=1。引用时必须连同证据分级一起复述，标 ⚪ 的数字在补证前不得视为已溯源，详见 AGENTS.md 与 [docs/references.md](docs/references.md) E。
 
 ## 🎯 十条核心结论（30 秒版）
 
@@ -58,7 +78,7 @@ A：所有关键数字带三级证据标注（🟢原文亲验/🔵子代理提�
 7. **自评自改的经济学** —— 评估消耗 99.97% 算力，agent 读缓存答案拿满分掩盖 68% 真实能力 🔵
 8. **多 agent 是方向对才有效** —— 只读探索 +90.2%（厂商内部 eval，打折看）；决策链拆多 agent 会崩 🟢
 9. **智能路由天花板比想象低** —— 21 种路由方法 top5 只差 0.22pp 🟢；主模型+fallback+分池 ≈ 最优形态
-10. **递归派生有风险相变** —— 危害概率 9.68%→51.86% 🟢（一手出处待补，见 references.md E）；派生要自由，授权逐级收紧
+10. **递归派生有风险相变** —— 危害概率 9.68%→51.86% ⚪（一手出处待补，见 references.md E）；派生要自由，授权逐级收紧
 
 > 每条数字的一手出处与核验状态见 [docs/references.md](docs/references.md)；标 ⚪ 待补的出处补充前不得视为已溯源。
 
@@ -68,10 +88,41 @@ A：所有关键数字带三级证据标注（🟢原文亲验/🔵子代理提�
 2. **自我进化的正确形态已闭环：LLM 出假设，确定性门出判据。** 模型自由自改 = 掷硬币；加程序化验收门 = +20-35pp 且跨模型可迁移。
 3. **模型是租的，装备是换的，机制才是资产。** 差距来自三条复利线：踩坑必沉淀、投入带判据、错误被系统自己抓出来。
 
+## 🧱 四层框架（Model → Harness → Loop → Graph）
+
+```mermaid
+flowchart TD
+    M["Model<br/>基础模型：能力上限，最快被商品化的一层"] --> H["Harness<br/>装备层：系统提示 / 工具 / 技能 / 记忆 / 上下文治理"]
+    H --> L["Loop<br/>回路层：独立验证、确定性验收门、失败回灌"]
+    L --> G["Graph<br/>编排层：多 agent 分工、授权分级、跨任务复用"]
+    G -. "反馈：哪些组合有效 / 哪些会崩" .-> H
+```
+
+四层里杠杆最大的是 Harness 与 Loop（组合与回路），不是 Model。每一层都能单独升级，但**跨层组合**才决定稳定与成本——这正是 C1-C8 与 K1-K9 要处理的问题。
+
+## 🛡️ 安全边界
+
+本手册讲「怎么把 agent 变强」，不重复讲「怎么保证它不被攻破」——后者是姐妹仓库 [Focus688/agent-security-skills](https://github.com/Focus688/agent-security-skills) 的职责：
+
+- 装第三方技能/插件前：先用 [`skill-review-checklist`](https://github.com/Focus688/agent-security-skills/blob/main/skills/skill-review-checklist/SKILL.md) 审，再按 [`secure-addon-install`](https://github.com/Focus688/agent-security-skills/blob/main/skills/secure-addon-install/SKILL.md) 做快照安装与回滚。
+- 攻击面与威胁模型（注入 / 工具滥用 / 外泄）：见 [`llm-attack-surface`](https://github.com/Focus688/agent-security-skills/blob/main/skills/llm-attack-surface/SKILL.md)。
+- 本仓库的 K1/K2 是「组合会互相咬」的反模式，不是完整的安全方案；两者一起用，别只取其一。
+
 ## ⚖️ 可信度分级
 
-本仓库所有关键数字带证据分级标注：🟢 = 作者回原文亲验 ｜ 🔵 = 研究子代理全文提取（关键项已抽查回验）｜ 🟡 = 转引。主要论据来源：arXiv 2026-05~09 预印本 22 篇（16 篇未经同行评审，见终稿「诚实校准」章）、Anthropic/Cloudflare/Chroma/Cognition 官方工程博客、408 仓库 GitHub API 实测普查（star/活跃度实测于 2026-09-03）。实机账本部分 N=1（单个生产 agent 实例），机制方向可信、具体参数需自行校准。
+本仓库所有关键数字带证据分级标注：🟢 = 作者回原文亲验 ｜ 🔵 = 研究子代理全文提取（关键项已抽查回验）｜ 🟡 = 转引 ｜ ⚪ = 一手出处待补（补充前不得视为已溯源，见 references.md E）。主要论据来源：arXiv 2026-05~09 预印本 22 篇（16 篇未经同行评审，见终稿「诚实校准」章）、Anthropic/Cloudflare/Chroma/Cognition 官方工程博客、408 仓库 GitHub API 实测普查（star/活跃度实测于 2026-09-03）。实机账本部分 N=1（单个生产 agent 实例），机制方向可信、具体参数需自行校准。
 
 ## 📄 License
 
 MIT
+
+---
+## Focus688 Open Source Matrix
+
+| 项目 | 定位 | 解决什么问题 |
+|---|---|---|
+| [**agent-security-skills**](https://github.com/Focus688/agent-security-skills) | Agent 安全之「盾」 | 生产 Agent 运维安全技能库：安全安装、静默故障巡检、MCP 权限与 SKILL.md 供应链审计 |
+| [**agent-enhancement-playbook**](https://github.com/Focus688/agent-enhancement-playbook) | Agent 增强之「矛」 | 证据分级的生产 Agent 增强手册：C1-C8 有效组合、K1-K9 反模式、12 维实机账本与可执行模板 **← 当前仓库** |
+| [**china-policy-radar**](https://github.com/Focus688/china-policy-radar) | 垂直情报活水层 | 结构化、带一手官方链接、机器可读的中国政策索引、跨版本 Diff 与回测记分牌 |
+| [**paper-repro**](https://github.com/Focus688/paper-repro) | 无代码论文复现 | 低预算独立复现/证伪无官方代码热门论文：源码 + 复现报告 + 全量日志可追溯 |
+| [**levi-focus**](https://focus688.github.io/levi-focus/) | 研究与矩阵总站 | 实弹供应链审计报告、复现拆解文章与 GEO 入口（[GitHub](https://github.com/Focus688/levi-focus)） |

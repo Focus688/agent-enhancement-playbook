@@ -20,10 +20,12 @@
   - 默认不覆盖输入：保留项写到 <input>.kept.json，隔离项写到 isolate-dir/quarantined_<date>.json。
   - --in-place 才覆盖输入，且覆盖前自动备份 <input>.bak-<UTC时间戳>。
   - 隔离区默认保留 90 天（--quarantine-retention-days），过期文件按文件名日期自动清理（--no-prune 关闭）。
+  - 写回（.kept.json / --in-place）默认剥离内部临时键 _score / _keep_reasons，不污染原始记忆 Schema；
+    需要保留评分明细时加 --keep-scores。
 
 用法：
   python3 memory_eviction.py memories.json --now 2026-11-16T00:00:00Z \
-      [--threshold 0.25] [--isolate-dir ./quarantine] [--dry-run] [--in-place]
+      [--threshold 0.25] [--isolate-dir ./quarantine] [--dry-run] [--in-place] [--keep-scores]
   python3 memory_eviction.py --self-test   # 内置断言自检，不依赖外部文件
 """
 import argparse, json, math, os, sys, tempfile
@@ -40,7 +42,7 @@ def parse_ts(s):
         return None
 
 
-def evict(memories, now, threshold=0.25,
+def evict(memories, now,
           w_recency=0.35, w_freq=0.25, w_centrality=0.20, w_age=0.20,
           half_life_days=30.0):
     link_count = {}
@@ -76,6 +78,14 @@ def evict(memories, now, threshold=0.25,
                            "recency": round(recency, 3), "freq": round(freq, 3),
                            "centrality": round(centrality, 3), "age_keep": round(age_keep, 3)}})
     return sorted(scored, key=lambda x: x["_score"])
+
+
+INTERNAL_KEYS = ("_score", "_keep_reasons")
+
+
+def strip_internal(items):
+    """剥离内部评分键，保证写回的 JSON 与原始记忆 Schema 一致（可重复执行）。"""
+    return [{k: v for k, v in m.items() if k not in INTERNAL_KEYS} for m in items]
 
 
 def prune_quarantine(isolate_dir, now, retention_days):
@@ -116,6 +126,8 @@ def main():
     ap.add_argument("--in-place", action="store_true", help="覆盖输入（自动先备份 .bak）")
     ap.add_argument("--quarantine-retention-days", type=float, default=90.0)
     ap.add_argument("--no-prune", action="store_true", help="不清理过期隔离文件")
+    ap.add_argument("--keep-scores", action="store_true",
+                    help="写回时保留 _score/_keep_reasons（默认剥离，避免污染原始 Schema）")
     ap.add_argument("--self-test", action="store_true", help="运行内置断言自检")
     args = ap.parse_args()
 
@@ -129,7 +141,7 @@ def main():
         ap.error(f"--now 非法 ISO8601: {args.now}")
     with open(args.memories_json, encoding="utf-8") as f:
         memories = json.load(f)
-    scored = evict(memories, now, args.threshold)
+    scored = evict(memories, now)
     to_evict = [m for m in scored if m["_score"] < args.threshold]
     keep = [m for m in scored if m["_score"] >= args.threshold]
     print(f"total={len(scored)}  evict_candidates={len(to_evict)}  threshold={args.threshold}")
@@ -141,7 +153,9 @@ def main():
         return 0
 
     os.makedirs(args.isolate_dir, exist_ok=True)
-    out_path = os.path.join(args.isolate_dir, f"quarantined_{args.now[:10]}.json")
+    # 用解析后的 UTC 日期，而不是对 --now 原字符串切片：
+    # 传入 +08:00 等偏移时，字符串切片会得到错误日期，与 prune_quarantine 的 UTC 语义不一致。
+    out_path = os.path.join(args.isolate_dir, f"quarantined_{now.strftime('%Y-%m-%d')}.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(to_evict, f, ensure_ascii=False, indent=2)
 
@@ -151,13 +165,15 @@ def main():
             original = f.read()
         with open(bak, "w", encoding="utf-8") as f:
             f.write(original)
+        out_items = keep if args.keep_scores else strip_internal(keep)
         with open(args.memories_json, "w", encoding="utf-8") as f:
-            json.dump(keep, f, ensure_ascii=False, indent=2)
+            json.dump(out_items, f, ensure_ascii=False, indent=2)
         print(f"in-place 覆盖输入（备份 -> {bak}）")
     else:
         kept_path = f"{args.memories_json}.kept.json"
+        out_items = keep if args.keep_scores else strip_internal(keep)
         with open(kept_path, "w", encoding="utf-8") as f:
-            json.dump(keep, f, ensure_ascii=False, indent=2)
+            json.dump(out_items, f, ensure_ascii=False, indent=2)
         print(f"kept -> {kept_path}（输入未改动；如需覆盖加 --in-place）")
 
     pruned = [] if args.no_prune else prune_quarantine(args.isolate_dir, now, args.quarantine_retention_days)
@@ -221,6 +237,37 @@ def self_test():
         check(rc == 0 and len(baks) == 1, "--in-place 覆盖前生成 1 个 .bak 备份")
         with open(inp, encoding="utf-8") as f:
             check(len(json.load(f)) == 1, "--in-place 后输入只剩保留项")
+
+    # 5. 非 UTC 时区：隔离文件名必须取 UTC 日期（+08:00 凌晨 2 点 = 前一日 18:00Z）
+    with tempfile.TemporaryDirectory() as td:
+        inp = os.path.join(td, "mem.json")
+        with open(inp, "w", encoding="utf-8") as f:
+            json.dump([old, new], f)
+        iso = os.path.join(td, "q")
+        rc = main_argv([inp, "--now", "2026-11-16T02:00:00+08:00", "--isolate-dir", iso])
+        check(rc == 0 and os.path.exists(os.path.join(iso, "quarantined_2026-11-15.json")),
+              "+08:00 时区 -> 隔离文件按 UTC 日期命名 (2026-11-15)")
+        check(not os.path.exists(os.path.join(iso, "quarantined_2026-11-16.json")),
+              "不按本地字符串切片生成错误日期")
+
+    # 6. 写回剥离内部键；--keep-scores 可显式保留
+    with tempfile.TemporaryDirectory() as td:
+        inp = os.path.join(td, "mem.json")
+        with open(inp, "w", encoding="utf-8") as f:
+            json.dump([old, new], f)
+        iso = os.path.join(td, "q")
+        main_argv([inp, "--now", "2026-11-16T00:00:00Z", "--isolate-dir", iso, "--in-place"])
+        with open(inp, encoding="utf-8") as f:
+            saved = json.load(f)
+        check(all("_score" not in m and "_keep_reasons" not in m for m in saved),
+              "--in-place 写回剥离 _score/_keep_reasons（原始 Schema 不被污染）")
+        inp2 = os.path.join(td, "mem2.json")
+        with open(inp2, "w", encoding="utf-8") as f:
+            json.dump([old, new], f)
+        main_argv([inp2, "--now", "2026-11-16T00:00:00Z", "--isolate-dir", iso, "--keep-scores"])
+        with open(inp2 + ".kept.json", encoding="utf-8") as f:
+            kept = json.load(f)
+        check(all("_score" in m for m in kept), "--keep-scores 保留评分明细（显式选择）")
     print(f"SELF-TEST PASS ({ok} assertions)")
     return 0
 

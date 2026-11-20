@@ -6,7 +6,7 @@ license: MIT
 
 # Agent Enhancement Cheat Sheet
 
-> Agent 能力 = 基础模型 × 能力组件 × 组合质量。组合压倒单项：固定模型换 harness 的性能方差是换模型的 7.80 倍。证据分级：🟢 亲验 / 🔵 提取 / 🟡 转引。完整方法论见仓库 docs/。
+> Agent 能力 = 基础模型 × 能力组件 × 组合质量。组合压倒单项：固定模型换 harness 的性能方差是换模型的 7.80 倍。证据分级：🟢 亲验 / 🔵 提取 / 🟡 转引 / ⚪ 一手出处待补。完整方法论见仓库 docs/。
 
 ## ✅ 正例组合 C1-C8
 
@@ -25,8 +25,8 @@ license: MIT
 
 | # | 别这么配 | 一句话防御 |
 |---|---|---|
-| K1 | 长记忆 + 大 top-K 双拉满 | 防御放管理阶段（隔离/淘汰），别指望排序 |
-| K2 | 自生成技能无执行门 | 真实回放准入（=C1） |
+| K1 | 长记忆 + 大 top-K 双拉满 | 防御放管理阶段（隔离/淘汰），别指望排序；威胁模型见 [llm-attack-surface](https://github.com/Focus688/agent-security-skills/blob/main/skills/llm-attack-surface/SKILL.md) |
+| K2 | 自生成技能无执行门 | 真实回放准入（=C1）；供应链审查见 [skill-review-checklist](https://github.com/Focus688/agent-security-skills/blob/main/skills/skill-review-checklist/SKILL.md) |
 | K3 | LLM 当自己的裁判 | 评测集混 canary 题：满分即作弊 |
 | K4 | 静态回放评测换模型 | 换模型必跑固定回归题组 |
 | K5 | 工具/技能堆叠 >10-15 个 | 工具面当预算管，宁少勿多 |

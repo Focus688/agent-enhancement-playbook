@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.3.1 — 2026-11-20（矩阵审计修复）
+
+按 2026-11 矩阵改造工单修复证据分级与模板工程问题。未改动任何已跑数或历史实验数据。
+
+### P0 修复
+- **证据分级违规**：按 `docs/references.md` E 节与 AGENTS.md 规则 1（未能定位一手出处不得标 🟢），
+  将 4 处降级为 ⚪（保留原警示文字）：结论 4「图谱 vs 扁平 -0.050」、结论 10「9.68%→51.86%」、
+  K4「61-94% rewrite / 3% replay」、C6/结论 9「78.0%@45K 置信门控」。
+- **图例自洽**：README / 终稿 / 速查卡 / SKILL.md 的证据分级图例统一补 ⚪ = 一手出处待补。
+
+### P1 修复
+- **`templates/memory_eviction.py` 加固**：
+  1. 隔离文件名改用解析后的 UTC 日期（`now.strftime('%Y-%m-%d')`），修复非 UTC 时区下字符串切片错位；
+  2. `evict()` 删除未使用的 `threshold` 参数（淘汰判定只在 main 中做）；
+  3. 写回（`.kept.json` / `--in-place`）默认剥离 `_score` / `_keep_reasons`，新增 `--keep-scores` 显式保留；
+     `--self-test` 增加 +08:00 时区与 Schema 无污染断言（15 assertions）。
+- **CI 硬门**：新增 `.github/workflows/ci.yml` —— `build-llms-full.py --check` 零漂移 + `memory_eviction.py --self-test`。
+- **README**：徽章、Quick Start、四层框架 Mermaid 图、安全边界交叉链接（→ agent-security-skills）、
+  Focus688 Open Source Matrix；K1/K2 在终稿与速查卡中补安全侧链接。
+
+### 核验声明（诚实边界）
+- 本次只改标注与工程实现，**未新增任何实验数据**，也未改动 `docs/` 中已核验的论文数字。
+- ⚪ 四处的原始表述保留在正文中，降级只表示「一手出处未定位」，不表示结论被推翻。
+
 ## v1.3 — 2026-11-16（质量审计修复）
 
 按 2026-11-16 质量评估（4 个 P0 + P1/P2）修复。Focus/Vex 审计，Pigman 维护提交。
